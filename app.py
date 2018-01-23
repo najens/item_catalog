@@ -33,6 +33,11 @@ def category(category):
     """ Displays list of items in category """
     return 'Show list of items for {}!'.format(category)
 
+@app.route('/catalogy/<category>/edit', methods=['GET', 'POST'])
+def edit_category(category):
+    """ Displays page to edit category """
+    return 'Edit {} here!'.format(category)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
