@@ -23,6 +23,11 @@ def login():
     """ Displays the login page """
     return 'Login here!'
 
+@app.route('/catalog/category/new')
+def new_category():
+    """ Displays page to add a new category """
+    return 'Add new category here!'
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
