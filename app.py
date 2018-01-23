@@ -16,6 +16,10 @@ def index():
 def register():
     return 'Register here!'
 
+@app.route('/login')
+def login():
+    return 'Login here!'
+    
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
