@@ -23,7 +23,7 @@ def login():
     """ Displays the login page """
     return 'Login here!'
 
-@app.route('/catalog/category/new')
+@app.route('/catalog/category/new', methods=['GET', 'POST'])
 def new_category():
     """ Displays page to add a new category """
     return 'Add new category here!'
