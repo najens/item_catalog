@@ -28,6 +28,11 @@ def new_category():
     """ Displays page to add a new category """
     return 'Add new category here!'
 
+@app.route('/catalog/<category>')
+def category(category):
+    """ Displays list of items in category """
+    return 'Show list of items for {}!'.format(category)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
