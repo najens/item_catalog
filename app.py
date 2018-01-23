@@ -38,6 +38,11 @@ def edit_category(category):
     """ Displays page to edit category """
     return 'Edit {} here!'.format(category)
 
+@app.route('/catalogy/<category>/delete', methods=['GET', 'POST'])
+def edit_category(category):
+    """ Displays page to delete category """
+    return 'Delete {} here!'.format(category)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
