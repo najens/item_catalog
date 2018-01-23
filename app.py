@@ -11,7 +11,7 @@ app.config['DEBUG'] = True
 @app.route('/catalog')
 def index():
     """ Displays the home page """
-    return 'Welcome to the item catalog!'
+    return render_template('base.html')
 
 @app.route('/register')
 def register():
