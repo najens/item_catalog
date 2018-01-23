@@ -8,8 +8,9 @@ app.config['DEBUG'] = True
 
 # build routes
 @app.route('/')
-def hello():
-    return 'Hello World'
+@app.route('/catalog')
+def index():
+    return 'Welcome to the item catalog!'
 
 
 if __name__ == '__main__':
