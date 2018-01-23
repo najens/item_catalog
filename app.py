@@ -48,6 +48,11 @@ def new_item(category):
     """ Displays page to add a new item to category """
     return 'Add new item for {} here!'.format(category)
 
+@app.route('/catalog/<category>/<int:id>')
+def item_info(category):
+    """ Displays page with information about item """
+    return 'Display info about {} item #{} here!'.format(category, id)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
