@@ -10,17 +10,17 @@ app.config['DEBUG'] = True
 @app.route('/')
 @app.route('/catalog')
 def index():
-    """ This is the home page """
+    """ Displays the home page """
     return 'Welcome to the item catalog!'
 
 @app.route('/register')
 def register():
-    """ This is the registration page """
+    """ Displays the registration page """
     return 'Register here!'
 
 @app.route('/login')
 def login():
-    """ This is the login page """
+    """ Displays the login page """
     return 'Login here!'
 
 
