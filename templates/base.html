@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title id="title">Item Catalog</title>
+    <link href="css/normalize.min.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
+</head>
+<body>
+    <div class="overflow-wrap">
+        <header>
+            <nav class="nav-bar">
+                <div class="nav-container flex-row">
+                    <img alt="Logo" class="logo" src="img/logo.png">
+                    <button class="nav-button" id="nav-btn"><i class="material-icons">menu</i></button>
+                </div>
+                <ul class="nav-list hidden" id="nav-lst">
+                    <li>
+                        <a class="flex-col" href="#" id="home">Home</a>
+                    </li>
+                    <li>
+                        <a class="flex-col" href="#about" id="section-1">About</a>
+                    </li>
+                    <li>
+                        <a class="flex-col" href="#skills" id="section-2">Skills</a>
+                    </li>
+                    <li>
+                        <a class="flex-col" href="#portfolio" id="section-3">Portfolio</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            {% block main %}{% endblock %}
+        </main>
+        <footer>
+            <div class="footer-container">
+                <p class="flex-col" id="copyright">(c) Nathan Jensen</p>
+            </div>
+        </footer>
+    </div>
+    <script src="js/data.js">
+    </script>
+    <script src="js/app.js">
+    </script>
+</body>
+</html>
