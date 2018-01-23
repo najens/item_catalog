@@ -43,7 +43,7 @@ def edit_category(category):
     """ Displays page to delete category """
     return 'Delete {} here!'.format(category)
 
-@app.route('/catalog/<category>/new', methods=['GET'], ['POST'])
+@app.route('/catalog/<category>/new', methods=['GET', 'POST'])
 def new_item(category):
     """ Displays page to add a new item to category """
     return 'Add new item for {} here!'.format(category)
