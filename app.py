@@ -58,6 +58,11 @@ def edit_item(category, id):
     """ Displays page to edit item """
     return 'Display page to edit {} item #{} here!'.format(category, id)
 
+@app.route('/catalog/<category>/<int:id>/delete', methods=['GET', 'POST'])
+def delete_item(category, id):
+    """ Displays page to delete item """
+    return 'Display page to delete {} item #{} here!'.format(category, id)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
