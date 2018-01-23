@@ -53,6 +53,11 @@ def item_info(category):
     """ Displays page with information about item """
     return 'Display info about {} item #{} here!'.format(category, id)
 
+@app.route('/catalog/<category>/<int:id>/edit', methods=['GET', 'POST'])
+def edit_item(category, id):
+    """ Displays page to edit item """
+    return 'Display page to edit {} item #{} here!'.format(category, id)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
