@@ -38,7 +38,7 @@ def edit_category(category):
     """ Displays page to edit category """
     return 'Edit {} here!'.format(category)
 
-@app.route('/catalogy/<category>/delete', methods=['GET', 'POST'])
+@app.route('/catalog/<category>/delete', methods=['GET', 'POST'])
 def edit_category(category):
     """ Displays page to delete category """
     return 'Delete {} here!'.format(category)
