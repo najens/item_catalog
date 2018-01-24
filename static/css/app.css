@@ -119,6 +119,18 @@ section h3 {
     height: 0.4rem;
     margin: 2.5rem 0 7.5rem;
 }
+/*** Login ***/
+.login-container {
+    border: 1px solid #000;
+    padding: 30px;
+}
+
+.login-btn {
+    color: #fff;
+    background: #E53935;
+    padding: 10px 15px;
+}
+
 /*** Intro ***/
 
 section:nth-of-type(1) {
