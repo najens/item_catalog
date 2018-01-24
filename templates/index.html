@@ -15,7 +15,14 @@
             </div>
             <div class="item">
                 <h3>Items</h3>
-                <ul></ul>
+                <ul>
+                    {% for item in items %}
+                        <li>
+                            <a href="{{url_for('item_info')}}">{{item.name}}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         <div>
     </div>
 {% endblock %}
