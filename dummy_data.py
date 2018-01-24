@@ -34,12 +34,12 @@ session.add(user1)
 session.commit()
 
 # Category 1
-category1 = Category(name='Soccer')
+category1 = Category(name='Soccer', user_id='1')
 session.add(category1)
 session.commit()
 
 # Item 1
-item1 = Item(name='Soccer Cleats', description='Awesome cleats', category_id=1)
+item1 = Item(name='Soccer Cleats', description='Awesome cleats', user_id=1, category_id=1)
 session.add(item1)
 session.commit()
 print('Added menu items!')
