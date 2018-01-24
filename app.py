@@ -3,11 +3,14 @@ from flask import Flask, render_template, url_for
 from models import db, User, Role, UserRoles
 
 
-# initialize app
+# Initialize app
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
-# build routes
+# Initialize Flask_SQLAlchemy
+db.init_app(app)
+
+# Build routes
 @app.route('/')
 @app.route('/catalog')
 def index():
