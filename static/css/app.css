@@ -299,7 +299,9 @@ section:nth-of-type(4) img {
 
 .footer-container {
     background: #000;
+    bottom: 0;
     padding: 20px 0;
+    position: fixed;
     width: 100%;
 }
 .sm-icon a {
