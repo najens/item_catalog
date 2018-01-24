@@ -75,6 +75,9 @@ a {
     height: 42px;
     width: auto;
 }
+.nav-heading {
+    display: inline-block;
+}
 .nav-button {
     background: none;
     border: 1px solid #efefef;
