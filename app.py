@@ -10,6 +10,7 @@ app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///item_catalog.db'
 
 # Initialize Flask_SQLAlchemy
+db.app = app
 db.init_app(app)
 
 # Build routes
