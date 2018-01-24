@@ -90,13 +90,6 @@ a {
 }
 
 /*** Main ***/
-.main-container {
-    border: 1px solid #000;
-    margin: 40% 15%;
-    padding: 30px;
-    vertical-align: middle;
-}
-
 section {
     color: #616161;
     padding: 6.0rem 0 4.0rem;
