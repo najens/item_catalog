@@ -33,6 +33,7 @@ class Category(db.Model):
     __tablename__ = 'category'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(32), nullable=False)
+    items = db.relationship('Item', backref='category', lazy=True)
 
 # Define Item model
 class Item(db.Model):
@@ -40,4 +41,4 @@ class Item(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(32), nullable=False)
     description = db.Column(db.String(250), nullable=False)
-    category = db.Column(db.String(32), nullable=False)
+    category_id = db.Column(db.Integer(), db.ForeignKey('category.id'), nullable=False)
