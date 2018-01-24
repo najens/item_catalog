@@ -80,14 +80,12 @@ a {
 }
 .nav-button {
     background: none;
-    border: 1px solid #efefef;
+    border: none;
+    color: #efefef;
     cursor: pointer;
+    font-size: 1rem;
     height: 42px;
     padding: 4px 12px;
-}
-.nav-button i {
-    color: #efefef;
-    font-size: 28px;
 }
 
 /*** Main ***/
