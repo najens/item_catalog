@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from flask import Flask, render_template, url_for
 from models import db, User, Role, UserRoles
+from os import path
 
 
 # Initialize app
@@ -70,4 +71,6 @@ def delete_item(category, id):
 
 
 if __name__ == '__main__':
+    if not path.exists('item_catalog.db'):
+        db.create_all()
     app.run(host='0.0.0.0', port=5000)
