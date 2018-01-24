@@ -21,7 +21,7 @@ def register():
 @app.route('/login')
 def login():
     """ Displays the login page """
-    return 'Login here!'
+    return render_template('login.html')
 
 @app.route('/catalog/category/new', methods=['GET', 'POST'])
 def new_category():
