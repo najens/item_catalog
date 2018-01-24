@@ -1,5 +1,6 @@
 # paths #
 venv/
+__pycache__/
 
 # files #
 *.db
