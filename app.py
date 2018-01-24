@@ -6,6 +6,7 @@ from models import db, User, Role, UserRoles
 # Initialize app
 app = Flask(__name__)
 app.config['DEBUG'] = True
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///item_catalog.db'
 
 # Initialize Flask_SQLAlchemy
 db.init_app(app)
