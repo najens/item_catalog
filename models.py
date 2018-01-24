@@ -27,3 +27,11 @@ class UserRoles(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id', ondelete='CASCADE'))
     role_id = db.Column(db.Integer(), db.ForeignKey('role.id', ondelete='CASCADE'))
+
+# Define Item model
+class Item(db.Model):
+    __tablename__ = 'item'
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(32), nullable=False)
+    description = db.Column(db.String(250), nullable=False)
+    category = db.Column(db.String(32), nullable=False)
