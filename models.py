@@ -38,7 +38,7 @@ class Category(db.Model):
     __tablename__ = 'category'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(32), nullable=False)
-    user_id = db.Columng(db.Integer(), db.ForeignKey('user.id'),
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'),
             nullable=False)
     items = db.relationship('Item', backref='category', lazy=True)
 
