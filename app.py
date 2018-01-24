@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from flask import Flask, render_template, url_for
-from models import db, User, Role, UserRoles
+from models import db, User, Role, UserRoles, Category, Item
 from os import path
 
 
