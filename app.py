@@ -18,7 +18,7 @@ db.init_app(app)
 @app.route('/catalog')
 def index():
     """ Displays the home page """
-    categories = Category.query.order_by(asc(Category.name)).all()
+    categories = Category.query.order_by(db.asc(Category.name)).all()
     return render_template('index.html', categories=categories)
 
 @app.route('/register')
