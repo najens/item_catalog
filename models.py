@@ -8,8 +8,9 @@ class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key = True)
     public_id = db.Column(db.String(50), unique=True, nullable=False)
-    username = db.Column(db.String(32), index = True)
-    password_hash = db.Column(db.String(128))
+    name = db.Column(db.String(32), server_default='')
+    email = db.Column(db.String(32), index=True, unique=True, nullable=False)
+    picture = db.Column(db.String(150), server_default='')
     roles = db.relationship('Role', secondary='user_roles',
             backref=db.backref('users', lazy='dynamic'))
 
@@ -17,8 +18,8 @@ class User(db.Model):
 class Role(db.Model):
     __tablename__ = 'role'
     id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(50), server_default=u'', unique=True)
-    label = db.Column(db.Unicode(255), server_default=u'')
+    name = db.Column(db.String(50), unique=True)
+    label = db.Column(db.Unicode(255),)
 
 # Define UserRoles model
 class UserRoles(db.Model):
