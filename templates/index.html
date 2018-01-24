@@ -2,5 +2,10 @@
 {% block main %}
     <div class="flex-col main-container">
         <h2>Welcome Home!</h2>
+        <ul>
+            {% for category in categories %}
+                <li>{{category.name}}</li>
+            {% endfor %}
+        </ul>
     </div>
 {% endblock %}
