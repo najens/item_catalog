@@ -98,7 +98,7 @@ def item_info(category):
 def edit_item(category, id):
     """ Displays page to edit item """
     item_to_edit = Item.query.filter_by(id=id).one()
-    if category_to_edit.user_id != 1:
+    if item_to_edit.user_id != 1:
         return 'You are not authorized to edit this category!'
     if request.method == 'POST':
         if request.form['name'] and request.form['description'] and request.form.get('category'):
@@ -110,7 +110,8 @@ def edit_item(category, id):
             db.session.commit()
             return redirect(url_for('index'))
     else:
-        return render_template('edit_item.html', item=item_to_edit)
+        categories = Category.query.order_by(db.asc(Category.name)).all()
+        return render_template('edit_item.html', item=item_to_edit, categories=categories)
 
 @app.route('/catalog/<category>/<int:id>/delete', methods=['GET', 'POST'])
 def delete_item(category, id):
