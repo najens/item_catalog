@@ -35,7 +35,7 @@ def login():
 @app.route('/catalog/category/new', methods=['GET', 'POST'])
 def new_category():
     """ Displays page to add a new category """
-    return 'Add new category here!'
+    return render_template('new_category.html')
 
 @app.route('/catalog/<category>')
 def category(category):
