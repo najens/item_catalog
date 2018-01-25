@@ -51,7 +51,16 @@ def category(category):
 @app.route('/catalogy/<category>/edit', methods=['GET', 'POST'])
 def edit_category(category):
     """ Displays page to edit category """
-    return 'Edit {} here!'.format(category)
+    category_to_edit = Category.query.filter_by(name=category).one()
+    if category_to_edit.user_id != 1:
+        return 'You are not authorized to edit this category!'
+    if request.method == 'POST':
+        if request.form['name']:
+            category_to_edit.name = request.form['name'])
+            db.session.commit()
+            return redirect(url_for('index'))
+    else:
+        return render_template('new_category.html')
 
 @app.route('/catalog/<category>/delete', methods=['GET', 'POST'])
 def delete_category(category):
