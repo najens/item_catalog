@@ -46,7 +46,10 @@ def new_category():
 @app.route('/catalog/<category>')
 def category(category):
     """ Displays list of items in category """
-    return 'Show list of items for {}!'.format(category)
+    categories = Category.query.order_by(db.asc(Category.name)).all()
+    category = Category.query.filter_by(name=category).one()
+    items = Item.query.filter_by(category_id=category.id).all()
+    return render_template('category.html', items=items, categories=categories)
 
 @app.route('/catalogy/<category>/edit', methods=['GET', 'POST'])
 def edit_category(category):
