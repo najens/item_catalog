@@ -12,13 +12,17 @@
                     <p>
                         <label for="description">Description:</label>
                     </p>
-                    <textarea name="description" rows="5" cols="30" maxlength="200" value="{{item.description}}"></textarea>
+                    <textarea name="description" rows="5" cols="30" maxlength="200">{{item.description}}</textarea>
                     <p>
                         <label for="category">Category:</label>
                     </p>
                     <select name="category">
                         {% for category in categories %}
-                        <option value={{category.name}}>{{category.name}}</option>
+                            {% if category.id == item.category_id %}
+                                <option selected value={{category.name}}>{{category.name}}</option>
+                            {% else %}
+                                <option value={{category.name}}>{{category.name}}</option>
+                            {% endif %}
                         {% endfor %}
                     <select>
                 </div>
