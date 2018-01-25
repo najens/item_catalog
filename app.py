@@ -78,7 +78,15 @@ def delete_category(category):
 @app.route('/catalog/item/new', methods=['GET', 'POST'])
 def new_item(category):
     """ Displays page to add a new item to category """
-    return 'Add new item for {} here!'.format(category)
+    if request.method == 'POST':
+        category = request.form['category']
+        category = Category.query.filter_by(name=category).one()
+        new_item = Item(name=request.form['name'], description=request.form['description'], category_id=category.id, user_id=1)
+        db.session.add(new_item)
+        db.session.commit()
+        return redirect(url_for('index'))
+    else:
+        return render_template('new_item.html')
 
 @app.route('/catalog/<category>/<int:id>')
 def item_info(category):
