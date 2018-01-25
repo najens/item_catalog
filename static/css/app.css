@@ -180,6 +180,11 @@ section h3 {
     text-align: left;
 }
 
+.links {
+    font-size: 0.7rem;
+    color: blue;
+}
+
 /*** Intro ***/
 
 section:nth-of-type(1) {
