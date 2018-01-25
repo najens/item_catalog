@@ -56,7 +56,7 @@ def edit_category(category):
         return 'You are not authorized to edit this category!'
     if request.method == 'POST':
         if request.form['name']:
-            category_to_edit.name = request.form['name'])
+            category_to_edit.name = request.form['name']
             db.session.commit()
             return redirect(url_for('index'))
     else:
