@@ -50,5 +50,5 @@ class Item(db.Model):
     description = db.Column(db.String(250), nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id',
             ondelete='CASCADE'))
-    category_id = db.Column(db.Integer(), db.ForeignKey('category.id',
+    category_name = db.Column(db.String(), db.ForeignKey('category.name',
             ondelete='CASCADE'))
