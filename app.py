@@ -65,7 +65,15 @@ def edit_category(category):
 @app.route('/catalog/<category>/delete', methods=['GET', 'POST'])
 def delete_category(category):
     """ Displays page to delete category """
-    return 'Delete {} here!'.format(category)
+    category_to_delete = Category.query.filter_by(name=category).one()
+    if category_to_delete.user_id != 1:
+        return "You are not authorized to delete this category!"
+    if request.method == 'POST':
+        db.session.delete(category_to_delete)
+        db.session.commit()
+        return redirect(url_for('index'))
+    else:
+        return render_template('deleteRestaurant.html', category=category_to_delete)
 
 @app.route('/catalog/item/new', methods=['GET', 'POST'])
 def new_item(category):
