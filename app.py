@@ -36,10 +36,11 @@ def login():
 def new_category():
     """ Displays page to add a new category """
     if request.method == 'POST':
-        new_category = Category(name=request.form['name'], user_id=1)
-        db.session.add(new_category)
-        db.session.commit()
-        return redirect(url_for('index'))
+        if request.form['name']:
+            new_category = Category(name=request.form['name'], user_id=1)
+            db.session.add(new_category)
+            db.session.commit()
+            return redirect(url_for('index'))
     else:
         return render_template('new_category.html')
 
@@ -81,10 +82,11 @@ def delete_category(category):
 def new_item():
     """ Displays page to add a new item to category """
     if request.method == 'POST':
-        new_item = Item(name=request.form['name'], description=request.form['description'], category_name=request.form.get('category'), user_id=1)
-        db.session.add(new_item)
-        db.session.commit()
-        return redirect(url_for('index'))
+        if request.form['name'] and request.form['description'] and request.form.get('category'):
+            new_item = Item(name=request.form['name'], description=request.form['description'], category_name=request.form.get('category'), user_id=1)
+            db.session.add(new_item)
+            db.session.commit()
+            return redirect(url_for('index'))
     else:
         categories = Category.query.order_by(db.asc(Category.name)).all()
         return render_template('new_item.html', categories=categories)
