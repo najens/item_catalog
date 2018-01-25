@@ -51,7 +51,7 @@ def category(category):
     items = Item.query.filter_by(category_id=category.id).order_by(db.asc(Item.name)).all()
     return render_template('category.html', items=items, categories=categories)
 
-@app.route('/catalogy/<category>/edit', methods=['GET', 'POST'])
+@app.route('/catalog/<category>/edit', methods=['GET', 'POST'])
 def edit_category(category):
     """ Displays page to edit category """
     category_to_edit = Category.query.filter_by(name=category).one()
