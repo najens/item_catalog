@@ -235,24 +235,6 @@ section h3 {
     font-size: 1.5rem;
 }
 
-.item-info {
-    background: #EEEEEE;
-    border: 1px solid #424242;
-    border-radius: 5px;
-    padding: 30px;
-    max-width: 60%;
-    text-align: left;
-}
-
-.item-info h3 {
-    color: #1E88E5;
-    margin-bottom: 15px;
-}
-
-.item-info p {
-    font-size: 1rem;
-}
-
 /*** Intro ***/
 
 section:nth-of-type(1) {
