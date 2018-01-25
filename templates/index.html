@@ -5,6 +5,7 @@
         <div class="flex-row catalog">
             <div class="category">
                 <h3>Categories</h3>
+                {% block category %}
                 <a class="links" href="{{url_for('new_category')}}">Add category</a>
                 <ul>
                     {% for category in categories %}
@@ -15,19 +16,22 @@
                         </li>
                     {% endfor %}
                 </ul>
+                {% endblock %}
             </div>
             <div class="item">
                 <h3>Items</h3>
+                {% block item %}
                 <a class="links" href="{{url_for('new_item')}}">Add item</a>
                 <ul>
                     {% for item in items %}
                         <li>
-                                <a href="{{url_for('item_info', category=item.category_id, id=item.id)}}">{{item.name}}</a>
-                                <a class="links" href="{{url_for('edit_item', category=item.category_id, id=item.id)}}">Edit</a>
-                                <a class="links" href="{{url_for('delete_item', category=item.category_id, id=item.id)}}">Delete</a>
+                            <a href="{{url_for('item_info', category=item.category_id, id=item.id)}}">{{item.name}}</a>
+                            <a class="links" href="{{url_for('edit_item', category=item.category_id, id=item.id)}}">Edit</a>
+                            <a class="links" href="{{url_for('delete_item', category=item.category_id, id=item.id)}}">Delete</a>
                         </li>
                     {% endfor %}
                 </ul>
+                {% endblock %}
             </div>
         <div>
     </div>
