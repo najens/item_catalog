@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request, redirect
 from models import db, User, Role, UserRoles, Category, Item
 from os import path
 
@@ -35,7 +35,13 @@ def login():
 @app.route('/catalog/category/new', methods=['GET', 'POST'])
 def new_category():
     """ Displays page to add a new category """
-    return render_template('new_category.html')
+    if request.method == 'POST':
+        new_category = Category(name=request.form['name'], user_id=1)
+        db.session.add(new_category)
+        db.session.commit()
+        return redirect(url_for('index'))
+    else:
+        return render_template('new_category.html')
 
 @app.route('/catalog/<category>')
 def category(category):
