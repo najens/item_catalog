@@ -201,11 +201,18 @@ section h3 {
 .form-group p {
     color: #607D8B;
     font-size: 1rem;
-    text-align: left;
     margin-bottom: 2px;
 }
 
 .form-group input {
+    margin-bottom: 30px;
+}
+
+.form-group textarea {
+    margin-bottom: 30px;
+}
+
+.form-group select {
     margin-bottom: 30px;
 }
 
@@ -217,6 +224,10 @@ section h3 {
     cursor: pointer;
     padding: 10px 25px;
     font-size: 1rem;
+}
+
+.left {
+    align-items: flex-start;
 }
 
 .highlight {

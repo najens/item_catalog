@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block main %}
+    <div class="flex-col main-container">
+        <form action="" method="post" >
+            <div class="form-group">
+                <h3>New Item</h3>
+                <div class="flex-col left">
+                    <p>
+                        <label for="name">Name:</label>
+                    </p>
+                    <input type="text" size="26" maxlength="100" name="name">
+                    <p>
+                        <label for="description">Description:</label>
+                    </p>
+                    <textarea name="description" rows="5" cols="30" maxlength="200"></textarea>
+                    <p>
+                        <label for="category">Category:</label>
+                    </p>
+                    <select name="category">
+                        {% for category in categories %}
+                        <option value={{category.name}}>{{category.name}}</option>
+                        {% endfor %}
+                    <select>
+                </div>
+                <div class="form-btn">
+                    <button type="submit">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
