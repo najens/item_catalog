@@ -93,9 +93,10 @@ def new_item():
         return render_template('new_item.html', categories=categories)
 
 @app.route('/catalog/<category>/<int:id>')
-def item_info(category):
+def item_info(category, id):
     """ Displays page with information about item """
-    return 'Display info about {} item #{} here!'.format(category, id)
+    item = Item.query.filter_by(id=id).one()
+    return render_template('item.html', item=item)
 
 @app.route('/catalog/<category>/<int:id>/edit', methods=['GET', 'POST'])
 def edit_item(category, id):
