@@ -124,7 +124,7 @@ def delete_item(category, id):
         db.session.commit()
         return redirect(url_for('index'))
     else:
-        return render_template('delete_category.html', item=item_to_delete)
+        return render_template('delete_item.html', item=item_to_delete)
 
 
 if __name__ == '__main__':
