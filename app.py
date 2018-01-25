@@ -73,7 +73,7 @@ def delete_category(category):
         db.session.commit()
         return redirect(url_for('index'))
     else:
-        return render_template('deleteRestaurant.html', category=category_to_delete)
+        return render_template('delete_category.html', category=category_to_delete)
 
 @app.route('/catalog/item/new', methods=['GET', 'POST'])
 def new_item(category):
