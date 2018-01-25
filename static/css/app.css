@@ -235,6 +235,19 @@ section h3 {
     font-size: 1.5rem;
 }
 
+.item-info {
+    text-align: left;
+    background: #EEEEEE;
+    border: 1px solid #424242;
+    border-radius: 5px;
+    padding: 30px;
+}
+
+.item-info h3 {
+    color: #1E88E5;
+    margin-bottom: 15px;
+}
+
 /*** Intro ***/
 
 section:nth-of-type(1) {
