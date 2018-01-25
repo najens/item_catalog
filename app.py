@@ -47,8 +47,7 @@ def new_category():
 def category(category):
     """ Displays list of items in category """
     categories = Category.query.order_by(db.asc(Category.name)).all()
-    category = Category.query.filter_by(name=category).one()
-    items = Item.query.filter_by(category_id=category.id).order_by(db.asc(Item.name)).all()
+    items = Item.query.filter_by(category_name=category).order_by(db.asc(Item.name)).all()
     return render_template('category.html', items=items, categories=categories)
 
 @app.route('/catalog/<category>/edit', methods=['GET', 'POST'])
@@ -82,14 +81,12 @@ def delete_category(category):
 def new_item():
     """ Displays page to add a new item to category """
     if request.method == 'POST':
-        category = request.form.get('category')
-        category = Category.query.filter_by(name=category).one()
-        new_item = Item(name=request.form['name'], description=request.form['description'], category_id=category.id, user_id=1)
+        new_item = Item(name=request.form['name'], description=request.form['description'], category_name=request.form.get('category'), user_id=1)
         db.session.add(new_item)
         db.session.commit()
         return redirect(url_for('index'))
     else:
-        categories = Category.query.all()
+        categories = Category.query.order_by(db.asc(Category.name)).all()
         return render_template('new_item.html', categories=categories)
 
 @app.route('/catalog/<category>/<int:id>')
@@ -106,11 +103,9 @@ def edit_item(category, id):
         return 'You are not authorized to edit this category!'
     if request.method == 'POST':
         if request.form['name'] and request.form['description'] and request.form.get('category'):
-            category = request.form.get('category')
-            category = Category.query.filter_by(name=category).one()
             item_to_edit.name = request.form['name']
             item_to_edit.description = request.form['description']
-            item_to_edit.category_id = category.id
+            item_to_edit.category_name = request.form.get('category')
             db.session.commit()
             return redirect(url_for('index'))
     else:
