@@ -116,7 +116,15 @@ def edit_item(category, id):
 @app.route('/catalog/<category>/<int:id>/delete', methods=['GET', 'POST'])
 def delete_item(category, id):
     """ Displays page to delete item """
-    return 'Display page to delete {} item #{} here!'.format(category, id)
+    item_to_delete = Item.query.filter_by(id=id).one()
+    if item_to_delete.user_id != 1:
+        return "You are not authorized to delete this category!"
+    if request.method == 'POST':
+        db.session.delete(item_to_delete)
+        db.session.commit()
+        return redirect(url_for('index'))
+    else:
+        return render_template('delete_category.html', item=item_to_delete)
 
 
 if __name__ == '__main__':
