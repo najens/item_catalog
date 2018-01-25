@@ -185,6 +185,40 @@ section h3 {
     color: blue;
 }
 
+/*** Forms ***/
+.form-group {
+    background: #EEEEEE;
+    border: 1px solid #424242;
+    border-radius: 5px;
+    padding: 30px;
+}
+
+.form-group h3 {
+    color: #455A64;
+    margin-bottom: 30px;
+}
+
+.form-group p {
+    color: #607D8B;
+    font-size: 1rem;
+    text-align: left;
+    margin-bottom: 2px;
+}
+
+.form-group input {
+    margin-bottom: 30px;
+}
+
+.form-group button {
+    background: #1565C0;
+    border: 1px solid #1565C0;
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
+    padding: 10px 25px;
+    font-size: 1rem;
+}
+
 /*** Intro ***/
 
 section:nth-of-type(1) {
