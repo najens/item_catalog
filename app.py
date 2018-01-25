@@ -60,7 +60,7 @@ def edit_category(category):
             db.session.commit()
             return redirect(url_for('index'))
     else:
-        return render_template('new_category.html')
+        return render_template('new_category.html', category=category_to_edit)
 
 @app.route('/catalog/<category>/delete', methods=['GET', 'POST'])
 def delete_category(category):
