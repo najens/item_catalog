@@ -85,8 +85,8 @@ def oauth(provider):
             response = make_response(redirect(url_for('index')))
             response.set_cookie('access_token', token.decode('ascii'))
             return response
-        else:
-            return url_for('login')
+    else:
+        return url_for('login')
 
 @app.route('/catalog/category/new', methods=['GET', 'POST'])
 @auth.login_required
