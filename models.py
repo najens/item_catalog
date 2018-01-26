@@ -19,6 +19,25 @@ class User(db.Model):
             backref=db.backref('user', lazy=True))
     items = db.relationship('Item', backref=db.backref('user', lazy=True))
 
+    def generate_auth_token(self, expiration=600):
+        s = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
+        return s.dumps({'id': self.public_id})
+
+    def generate_public_id(self):
+        self.public_id = str(uuid.uuid4())
+
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except SignatureExpired:
+            return None    # valid token, but expired
+        except BadSignature:
+            return None    # invalid token
+        user = User.query.filter_by(public_id=data['id']).first()
+        return user
+
 # Define Role model
 class Role(db.Model):
     __tablename__ = 'role'
