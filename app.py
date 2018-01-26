@@ -38,7 +38,14 @@ def index():
     """ Displays the home page """
     categories = Category.query.order_by(db.asc(Category.name)).all()
     items = Item.query.order_by(db.desc(Item.id)).limit(10)
-    return render_template('index.html', categories=categories, items=items)
+    # Check if user has access_token
+    if 'access_token' in request.cookies:
+        access_token = request.cookies.get('access_token')
+        user = User.verify_auth_token(access_token)
+        if user:
+            return render_template('index.html', categories=categoires, items=items, user=user)
+        else:
+            return render_template('public_index.html', categories=categories, items=items)
 
 @app.route('/register')
 def register():
