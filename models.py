@@ -1,4 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
+from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer,
+        BadSignature, SignatureExpired)
 
 
 db = SQLAlchemy()
