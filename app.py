@@ -15,6 +15,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///item_catalog.db'
 db.app = app
 db.init_app(app)
 
+# Initialize Flask-HTTPAuth
+auth = HTTPBasicAuth()
+
+# Initialize Flask-Dance
 google_blueprint = make_google_blueprint(
     client_id="117054638326-j19nic44e9a8ountnbfk2jn9ddejmrqc.apps.googleusercontent.com",
     client_secret="LXqfK5z1WuSaZm3ACgh03SAD",
