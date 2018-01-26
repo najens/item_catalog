@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, make_response
 from models import db, User, Role, UserRoles, Category, Item
 from os import path
 from flask_httpauth import HTTPBasicAuth
+from flask_dance.contrib.google import make_google_blueprint, google
 
 
 # Initialize app
@@ -13,6 +14,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///item_catalog.db'
 # Initialize Flask_SQLAlchemy
 db.app = app
 db.init_app(app)
+
+google_blueprint = make_google_blueprint(
+    client_id="117054638326-j19nic44e9a8ountnbfk2jn9ddejmrqc.apps.googleusercontent.com",
+    client_secret="LXqfK5z1WuSaZm3ACgh03SAD",
+    scope=["email"]
+)
+app.register_blueprint(google_blueprint, url_prefix="/google_login")
 
 @auth.verify_password
 def verify_password(username_or_token, password):
@@ -41,6 +49,33 @@ def register():
 def login():
     """ Displays the login page """
     return render_template('login.html')
+
+@app.route('/oauth/<provider>')
+def oauth(provider):
+    if provider == google:
+        if not google.authorized:
+            return redirect(url_for("google.login"))
+        account_info = google.get("/oauth2/v2/userinfo")
+        if accoun_info.ok:
+            account_info_json = account_info.json()
+            #see if user exists, if it doesn't make a new one
+            user = User.query.filter_by(email=account_info_json['email']).first()
+            if not user:
+                user = User(provider='google',
+                            name=account_info_json['name'],
+                            email=account_info_json['email'],
+                            picture=account_info_json['picture'])
+                user.generate_public_id()
+                user.generate_created_at()
+                db.session.add(user)
+                db.session.commit()
+            # generate token
+            token = user.generate_auth_token(600)
+            response = make_response(redirect(url_for('index')))
+            response.set_cookie('access_token', token.decode('ascii'))
+            return response
+        else:
+            return url_for('login')
 
 @app.route('/catalog/category/new', methods=['GET', 'POST'])
 @auth.login_required
