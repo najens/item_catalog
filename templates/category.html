@@ -1,5 +1,6 @@
 {% extends 'index.html' %}
 {% block item %}
+    <h3>{{category}} Items</h3>
     <a class="links" href="{{url_for('new_item')}}">Add item</a>
     <ul>
         {% for item in items %}
