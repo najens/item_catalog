@@ -2,6 +2,7 @@
 from flask import Flask, render_template, url_for, request, redirect
 from models import db, User, Role, UserRoles, Category, Item
 from os import path
+from flask_httpauth import HTTPBasicAuth
 
 
 # Initialize app
@@ -12,6 +13,15 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///item_catalog.db'
 # Initialize Flask_SQLAlchemy
 db.app = app
 db.init_app(app)
+
+@auth.verify_password
+def verify_password(username_or_token, password):
+    # try to authenticate by token
+    user = User.verify_auth_token(username_or_token)
+    if not user:
+        return False
+    g.user = user
+    return True
 
 # Build routes
 @app.route('/')
@@ -33,6 +43,7 @@ def login():
     return render_template('login.html')
 
 @app.route('/catalog/category/new', methods=['GET', 'POST'])
+@auth.login_required
 def new_category():
     """ Displays page to add a new category """
     if request.method == 'POST':
@@ -52,6 +63,7 @@ def category(category):
     return render_template('category.html', items=items, categories=categories, category=category)
 
 @app.route('/catalog/<category>/edit', methods=['GET', 'POST'])
+@auth.login_required
 def edit_category(category):
     """ Displays page to edit category """
     category_to_edit = Category.query.filter_by(name=category).one()
@@ -66,6 +78,7 @@ def edit_category(category):
         return render_template('edit_category.html', category=category_to_edit)
 
 @app.route('/catalog/<category>/delete', methods=['GET', 'POST'])
+@auth.login_required
 def delete_category(category):
     """ Displays page to delete category """
     category_to_delete = Category.query.filter_by(name=category).one()
@@ -79,6 +92,7 @@ def delete_category(category):
         return render_template('delete_category.html', category=category_to_delete)
 
 @app.route('/catalog/item/new', methods=['GET', 'POST'])
+@auth.login_required
 def new_item():
     """ Displays page to add a new item to category """
     if request.method == 'POST':
@@ -98,6 +112,7 @@ def item_info(category, id):
     return render_template('item.html', item=item)
 
 @app.route('/catalog/<category>/<int:id>/edit', methods=['GET', 'POST'])
+@auth.login_required
 def edit_item(category, id):
     """ Displays page to edit item """
     item_to_edit = Item.query.filter_by(id=id).one()
@@ -115,6 +130,7 @@ def edit_item(category, id):
         return render_template('edit_item.html', item=item_to_edit, categories=categories)
 
 @app.route('/catalog/<category>/<int:id>/delete', methods=['GET', 'POST'])
+@auth.login_required
 def delete_item(category, id):
     """ Displays page to delete item """
     item_to_delete = Item.query.filter_by(id=id).one()
