@@ -1,0 +1,11 @@
+{% extends 'public_index.html' %}
+{% block item %}
+    <h3>{{category}} Items</h3>
+    <ul>
+        {% for item in items %}
+            <li>
+                <a href="{{url_for('item_info', category=item.category_id, id=item.id)}}">{{item.name}}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
