@@ -48,8 +48,8 @@ def index():
         user = User.verify_auth_token(access_token)
         if user:
             return render_template('index.html', categories=categoires, items=items, user=user)
-        else:
-            return render_template('public_index.html', categories=categories, items=items)
+    else:
+        return render_template('public_index.html', categories=categories, items=items)
 
 @app.route('/register')
 def register():
