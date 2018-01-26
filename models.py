@@ -10,6 +10,8 @@ class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key = True)
     public_id = db.Column(db.String(50), unique=True, nullable=False)
+    provider = db.Column(db.String(32), server_default='')
+    created_at = db.Colun(db.String(50), nullable=False)
     name = db.Column(db.String(32), server_default='')
     email = db.Column(db.String(32), index=True, unique=True, nullable=False)
     picture = db.Column(db.String(150), server_default='')
