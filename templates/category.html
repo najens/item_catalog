@@ -4,11 +4,17 @@
     <a class="links" href="{{url_for('new_item')}}">Add item</a>
     <ul>
         {% for item in items %}
-            <li>
-                <a href="{{url_for('item_info', category=item.category_id, id=item.id)}}">{{item.name}}</a>
-                <a class="links" href="{{url_for('edit_item', category=item.category_name, id=item.id)}}">Edit</a>
-                <a class="links" href="{{url_for('delete_item', category=item.category_name, id=item.id)}}">Delete</a>
-            </li>
+            {% if item.user_id == user.id %}
+                <li>
+                    <a href="{{url_for('item_info', category=item.category_name, id=item.id)}}">{{item.name}}</a>
+                    <span>({{item.category_name}})</span>
+                    <a class="links" href="{{url_for('edit_item', category=item.category_name, id=item.id)}}">Edit</a>
+                    <a class="links" href="{{url_for('delete_item', category=item.category_name, id=item.id)}}">Delete</a>
+                </li>
+            {% else %}
+                <a href="{{url_for('item_info', category=item.category_name, id=item.id)}}">{{item.name}}</a>
+                <span>({{item.category_name}})</span>
+            {% endif %}
         {% endfor %}
     </ul>
 {% endblock %}
