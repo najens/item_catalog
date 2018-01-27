@@ -4,12 +4,14 @@ from models import db, User, Role, UserRoles, Category, Item
 from os import path
 from flask_httpauth import HTTPBasicAuth
 from flask_dance.contrib.google import make_google_blueprint, google
-
+import logging
+from logging.handlers import RotatingFileHandler
 
 # Initialize app
 app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///item_catalog.db'
+app.config['SECRET_KEY'] = 'supersecret'
 
 # Initialize Flask_SQLAlchemy
 db.app = app
@@ -22,7 +24,7 @@ auth = HTTPBasicAuth()
 google_blueprint = make_google_blueprint(
     client_id="117054638326-j19nic44e9a8ountnbfk2jn9ddejmrqc.apps.googleusercontent.com",
     client_secret="LXqfK5z1WuSaZm3ACgh03SAD",
-    scope=["email"]
+    scope=["profile", "email"]
 )
 app.register_blueprint(google_blueprint, url_prefix="/google_login")
 
@@ -47,7 +49,9 @@ def index():
         access_token = request.cookies.get('access_token')
         user = User.verify_auth_token(access_token)
         if user:
-            return render_template('index.html', categories=categoires, items=items, user=user)
+            return render_template('index.html', categories=categories, items=items, user=user)
+        else:
+            return render_template('public_index.html', categories=categories, items=items)
     else:
         return render_template('public_index.html', categories=categories, items=items)
 
@@ -63,11 +67,13 @@ def login():
 
 @app.route('/oauth/<provider>')
 def oauth(provider):
-    if provider == google:
+    app.logger.info(provider)
+    if provider == 'google':
+        app.logger.info(google.authorized)
         if not google.authorized:
             return redirect(url_for("google.login"))
         account_info = google.get("/oauth2/v2/userinfo")
-        if accoun_info.ok:
+        if account_info.ok:
             account_info_json = account_info.json()
             #see if user exists, if it doesn't make a new one
             user = User.query.filter_by(email=account_info_json['email']).first()
@@ -86,7 +92,7 @@ def oauth(provider):
             response.set_cookie('access_token', token.decode('ascii'))
             return response
     else:
-        return url_for('login')
+        return redirect(url_for('login'))
 
 @app.route('/catalog/category/new', methods=['GET', 'POST'])
 @auth.login_required
@@ -193,4 +199,10 @@ def delete_item(category, id):
 if __name__ == '__main__':
     if not path.exists('item_catalog.db'):
         db.create_all()
+    formatter = logging.Formatter(
+        "[%(asctime)s] {%(pathname)s:%(lineno)d} - %(name)s - %(levelname)s - %(message)s")
+    handler = RotatingFileHandler('foo.log', maxBytes=10000, backupCount=5)
+    handler.setLevel(logging.DEBUG)
+    handler.setFormatter(formatter)
+    app.logger.addHandler(handler)
     app.run(host='0.0.0.0', port=5000)
