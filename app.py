@@ -2,63 +2,62 @@
 from flask import Flask, render_template, url_for, request, redirect, make_response
 from models import db, User, Role, UserRoles, Category, Item
 from os import path
-from flask_httpauth import HTTPBasicAuth
 from flask_dance.contrib.google import make_google_blueprint, google
 import logging
 from logging.handlers import RotatingFileHandler
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    jwt_refresh_token_required, create_refresh_token,
+    get_jwt_identity, set_access_cookies,
+    set_refresh_cookies, unset_jwt_cookies, jwt_optional
+)
+
 
 # Initialize app
 app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///item_catalog.db'
 app.config['SECRET_KEY'] = 'supersecret'
+app.config['JWT_TOKEN_LOCATION'] = ['cookies']
+app.config['JWT_ACCESS_COOKIE_PATH'] = '/catalog/'
+app.config['JWT_REFRESH_COOKIE_PATH'] = '/token/refresh'
+app.config['JWT_COOKIE_CSRF_PROTECT'] = False
+app.config['JWT_SECRET_KEY'] = 'super-secret'
 
 # Initialize Flask_SQLAlchemy
 db.app = app
 db.init_app(app)
 
-# Initialize Flask-HTTPAuth
-auth = HTTPBasicAuth()
+# Initialize Flask-JWT-Extended
+jwt = JWTManager(app)
 
 # Initialize Flask-Dance
 google_blueprint = make_google_blueprint(
     client_id="117054638326-j19nic44e9a8ountnbfk2jn9ddejmrqc.apps.googleusercontent.com",
     client_secret="LXqfK5z1WuSaZm3ACgh03SAD",
-    scope=["profile", "email"]
+    scope=["profile", "email"],
+    redirect_to="get_auth_token"
 )
 app.register_blueprint(google_blueprint, url_prefix="/google_login")
 
-@auth.verify_password
-def verify_password(username_or_token, password):
-    # try to authenticate by token
-    user = User.verify_auth_token(username_or_token)
-    if not user:
-        return False
-    g.user = user
-    return True
+@jwt.expired_token_loader
+def my_expired_token_callback():
+    return redirect(url_for('refresh'))
 
 # Build routes
-@app.route('/')
-@app.route('/catalog')
+@app.route('/catalog/')
+@jwt_optional
 def index():
     """ Displays the home page """
     categories = Category.query.order_by(db.asc(Category.name)).all()
     items = Item.query.order_by(db.desc(Item.id)).limit(10)
-    # Check if user has access_token
-    if 'access_token' in request.cookies:
-        access_token = request.cookies.get('access_token')
-        user = User.verify_auth_token(access_token)
-        if user:
-            return render_template('index.html', categories=categories, items=items, user=user)
-        else:
-            return render_template('public_index.html', categories=categories, items=items)
+    # Check if user has valid access_token
+    public_id = get_jwt_identity()
+    user = User.query.filter_by(public_id=public_id).first()
+    if user:
+        return render_template('index.html', categories=categories, items=items, user=user)
     else:
         return render_template('public_index.html', categories=categories, items=items)
-
-@app.route('/register')
-def register():
-    """ Displays the registration page """
-    return 'Register here!'
 
 @app.route('/login')
 def login():
@@ -72,30 +71,61 @@ def oauth(provider):
         app.logger.info(google.authorized)
         if not google.authorized:
             return redirect(url_for("google.login"))
-        account_info = google.get("/oauth2/v2/userinfo")
-        if account_info.ok:
-            account_info_json = account_info.json()
-            #see if user exists, if it doesn't make a new one
-            user = User.query.filter_by(email=account_info_json['email']).first()
-            if not user:
-                user = User(provider='google',
-                            name=account_info_json['name'],
-                            email=account_info_json['email'],
-                            picture=account_info_json['picture'])
-                user.generate_public_id()
-                user.generate_created_at()
-                db.session.add(user)
-                db.session.commit()
-            # generate token
-            token = user.generate_auth_token(600)
-            response = make_response(redirect(url_for('index')))
-            response.set_cookie('access_token', token.decode('ascii'))
-            return response
+        else:
+            return redirect(url_for("get_auth_token"))
     else:
         return redirect(url_for('login'))
 
+@app.route('/token', methods=['GET'])
+def get_auth_token():
+    if not google.authorized:
+        return redirect(url_for("google.login"))
+    account_info = google.get("/oauth2/v2/userinfo")
+    if account_info.ok:
+        account_info_json = account_info.json()
+        #see if user exists, if it doesn't make a new one
+        user = User.query.filter_by(email=account_info_json['email']).first()
+        if not user:
+            user = User(provider='google',
+                        name=account_info_json['name'],
+                        email=account_info_json['email'],
+                        picture=account_info_json['picture'])
+            user.generate_public_id()
+            user.generate_created_at()
+            db.session.add(user)
+            db.session.commit()
+
+        # Create the tokens we will be sending back to the user
+        access_token = create_access_token(identity=user.public_id)
+        refresh_token = create_refresh_token(identity=user.public_id)
+
+        # Set the JWT cookies in the response
+        response = make_response(redirect(url_for('index')))
+        set_access_cookies(response, access_token)
+        set_refresh_cookies(response, refresh_token)
+        return response
+
+@app.route('/token/refresh', methods=['GET'])
+@jwt_refresh_token_required
+def refresh():
+    # Create the new access token
+    current_user = get_jwt_identity()
+    access_token = create_access_token(identity=current_user)
+
+    # Set the JWT access cookie in the response
+    response = make_response(redirect(url_for('index')))
+    set_access_cookies(response, access_token)
+    return response
+
+@app.route('/catalog/token/remove', methods=['GET'])
+@jwt_required
+def logout():
+    response = make_response(redirect(url_for('index')))
+    unset_jwt_cookies(response)
+    return response
+
 @app.route('/catalog/category/new', methods=['GET', 'POST'])
-@auth.login_required
+@jwt_required
 def new_category():
     """ Displays page to add a new category """
     if request.method == 'POST':
@@ -108,14 +138,21 @@ def new_category():
         return render_template('new_category.html')
 
 @app.route('/catalog/<category>')
+@jwt_optional
 def category(category):
     """ Displays list of items in category """
     categories = Category.query.order_by(db.asc(Category.name)).all()
     items = Item.query.filter_by(category_name=category).order_by(db.asc(Item.name)).all()
-    return render_template('category.html', items=items, categories=categories, category=category)
+    # Check if user has valid access_token
+    public_id = get_jwt_identity()
+    user = User.query.filter_by(public_id=public_id).first()
+    if user:
+        return render_template('category.html', items=items, categories=categories, category=category, user=user)
+    else:
+        return render_template('public_category.html', items=items, categories=categories, category=category)
 
 @app.route('/catalog/<category>/edit', methods=['GET', 'POST'])
-@auth.login_required
+@jwt_required
 def edit_category(category):
     """ Displays page to edit category """
     category_to_edit = Category.query.filter_by(name=category).one()
@@ -130,7 +167,7 @@ def edit_category(category):
         return render_template('edit_category.html', category=category_to_edit)
 
 @app.route('/catalog/<category>/delete', methods=['GET', 'POST'])
-@auth.login_required
+@jwt_required
 def delete_category(category):
     """ Displays page to delete category """
     category_to_delete = Category.query.filter_by(name=category).one()
@@ -144,7 +181,7 @@ def delete_category(category):
         return render_template('delete_category.html', category=category_to_delete)
 
 @app.route('/catalog/item/new', methods=['GET', 'POST'])
-@auth.login_required
+@jwt_required
 def new_item():
     """ Displays page to add a new item to category """
     if request.method == 'POST':
@@ -164,7 +201,7 @@ def item_info(category, id):
     return render_template('item.html', item=item)
 
 @app.route('/catalog/<category>/<int:id>/edit', methods=['GET', 'POST'])
-@auth.login_required
+@jwt_required
 def edit_item(category, id):
     """ Displays page to edit item """
     item_to_edit = Item.query.filter_by(id=id).one()
@@ -182,7 +219,7 @@ def edit_item(category, id):
         return render_template('edit_item.html', item=item_to_edit, categories=categories)
 
 @app.route('/catalog/<category>/<int:id>/delete', methods=['GET', 'POST'])
-@auth.login_required
+@jwt_required
 def delete_item(category, id):
     """ Displays page to delete item """
     item_to_delete = Item.query.filter_by(id=id).one()
