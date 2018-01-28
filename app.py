@@ -13,6 +13,7 @@ from flask_jwt_extended import (
     set_refresh_cookies, unset_jwt_cookies, jwt_optional
 )
 from datetime import timedelta
+from urllib.parse import urlsplit, unquote
 
 
 # Initialize app
@@ -53,7 +54,9 @@ app.register_blueprint(facebook_blueprint, url_prefix="/facebook_login")
 
 @jwt.expired_token_loader
 def my_expired_token_callback():
-    return redirect(url_for('refresh'))
+    request_url = request.path
+    app.logger.info(request_url)
+    return redirect(url_for('refresh', next=request_url))
 
 # Build routes
 @app.route('/catalog/')
@@ -113,7 +116,7 @@ def get_auth_token(provider):
                 db.session.add(user)
                 db.session.commit()
             # Create the tokens we will be sending back to the user
-            expires = timedelta(seconds=60)
+            expires = timedelta(seconds=20)
             access_token = create_access_token(identity=user.public_id, expires_delta=expires)
             refresh_token = create_refresh_token(identity=user.public_id)
 
@@ -142,7 +145,7 @@ def get_auth_token(provider):
                 db.session.commit()
 
             # Create the tokens we will be sending back to the user
-            expires = timedelta(seconds=60)
+            expires = timedelta(seconds=20)
             access_token = create_access_token(identity=user.public_id, expires_delta=expires)
             refresh_token = create_refresh_token(identity=user.public_id)
 
@@ -165,7 +168,8 @@ def refresh():
     access_token = create_access_token(identity=current_user)
 
     # Set the JWT access cookie in the response
-    response = make_response(redirect(url_for('index')))
+    safe_next = _get_safe_next_param('next', 'index')
+    response = make_response(redirect(safe_next))
     set_access_cookies(response, access_token)
     return response
 
@@ -289,6 +293,34 @@ def delete_item(category, id):
         return redirect(url_for('index'))
     else:
         return render_template('delete_item.html', item=item_to_delete)
+
+# Turns an usafe absolute URL into a safe relative URL by removing the scheme and the hostname
+# Example: make_safe_url('http://hostname/path1/path2?q1=v1&q2=v2#fragment')
+#          returns: '/path1/path2?q1=v1&q2=v2#fragment
+def make_safe_url(url):
+    parts = urlsplit(url)
+    safe_url = parts.path+parts.query+parts.fragment
+    return safe_url
+
+
+# 'next' and 'reg_next' query parameters contain quoted (URL-encoded) URLs
+# that may contain unsafe hostnames.
+# Return the query parameter as a safe, unquoted URL
+def _get_safe_next_param(param_name, default_endpoint):
+    if param_name in request.args:
+        # return safe unquoted query parameter value
+        safe_next = make_safe_url(unquote(request.args[param_name]))
+    else:
+        # return URL of default endpoint
+        safe_next = _endpoint_url(default_endpoint)
+    return safe_next
+
+
+def _endpoint_url(endpoint):
+    url = '/catalog/'
+    if endpoint:
+        url = url_for(endpoint)
+    return url
 
 
 if __name__ == '__main__':
