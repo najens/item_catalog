@@ -1,7 +1,5 @@
 from  flask import current_app
 from flask_sqlalchemy import SQLAlchemy
-from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer,
-        BadSignature, SignatureExpired)
 import uuid
 from datetime import datetime
 
@@ -23,27 +21,11 @@ class User(db.Model):
             backref=db.backref('user', lazy=True))
     items = db.relationship('Item', backref=db.backref('user', lazy=True))
 
-    def generate_auth_token(self, expiration=600):
-        s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
-        return s.dumps({'id': self.public_id})
-
     def generate_public_id(self):
         self.public_id = str(uuid.uuid4())
 
     def generate_created_at(self):
         self.created_at = str(datetime.utcnow())
-
-    @staticmethod
-    def verify_auth_token(token):
-        s = Serializer(current_app.config['SECRET_KEY'])
-        try:
-            data = s.loads(token)
-        except SignatureExpired:
-            return None    # valid token, but expired
-        except BadSignature:
-            return None    # invalid token
-        user = User.query.filter_by(public_id=data['id']).first()
-        return user
 
 # Define Role model
 class Role(db.Model):
@@ -56,7 +38,7 @@ class Role(db.Model):
 class UserRoles(db.Model):
     __tablename__ = 'user_roles'
     id = db.Column(db.Integer(), primary_key=True)
-    user_id = db.Column(db.Integer(), db.ForeignKey('user.id',
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.public_id',
             ondelete='CASCADE'))
     role_id = db.Column(db.Integer(), db.ForeignKey('role.id',
             ondelete='CASCADE'))
@@ -66,7 +48,7 @@ class Category(db.Model):
     __tablename__ = 'category'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(32), nullable=False)
-    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'),
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.public_id'),
             nullable=False)
     items = db.relationship('Item', backref='category', lazy=True)
 
@@ -76,7 +58,7 @@ class Item(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(32), nullable=False)
     description = db.Column(db.String(250), nullable=False)
-    user_id = db.Column(db.Integer(), db.ForeignKey('user.id',
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.public_id',
             ondelete='CASCADE'))
     category_name = db.Column(db.String(), db.ForeignKey('category.name',
             ondelete='CASCADE'))
