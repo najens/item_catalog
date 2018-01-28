@@ -3,6 +3,7 @@ from flask import Flask, render_template, url_for, request, redirect, make_respo
 from models import db, User, Role, UserRoles, Category, Item
 from os import path
 from flask_dance.contrib.google import make_google_blueprint, google
+from flask_dance.contrib.facebook import make_facebook_blueprint, facebook
 import logging
 from logging.handlers import RotatingFileHandler
 from flask_jwt_extended import (
@@ -36,9 +37,18 @@ google_blueprint = make_google_blueprint(
     client_id="117054638326-j19nic44e9a8ountnbfk2jn9ddejmrqc.apps.googleusercontent.com",
     client_secret="LXqfK5z1WuSaZm3ACgh03SAD",
     scope=["profile", "email"],
-    redirect_to="get_auth_token"
+    redirect_url="/token/google"
 )
+
+facebook_blueprint = make_facebook_blueprint(
+    client_id="141117439918918",
+    client_secret="5f91c11eb7eed46b608dce28a0b6c7ca",
+    scope=["public_profile", "email"],
+    redirect_url="/token/facebook"
+)
+
 app.register_blueprint(google_blueprint, url_prefix="/google_login")
+app.register_blueprint(facebook_blueprint, url_prefix="/facebook_login")
 
 @jwt.expired_token_loader
 def my_expired_token_callback():
@@ -72,38 +82,77 @@ def oauth(provider):
         if not google.authorized:
             return redirect(url_for("google.login"))
         else:
-            return redirect(url_for("get_auth_token"))
+            return redirect(url_for("get_auth_token", provider=provider))
+    elif provider == 'facebook':
+        if not facebook.authorized:
+            return redirect(url_for("facebook.login"))
+        else:
+            return redirect(url_for("get_auth_token", provider=provider))
     else:
         return redirect(url_for('login'))
 
-@app.route('/token', methods=['GET'])
-def get_auth_token():
-    if not google.authorized:
-        return redirect(url_for("google.login"))
-    account_info = google.get("/oauth2/v2/userinfo")
-    if account_info.ok:
-        account_info_json = account_info.json()
-        #see if user exists, if it doesn't make a new one
-        user = User.query.filter_by(email=account_info_json['email']).first()
-        if not user:
-            user = User(provider='google',
-                        name=account_info_json['name'],
-                        email=account_info_json['email'],
-                        picture=account_info_json['picture'])
-            user.generate_public_id()
-            user.generate_created_at()
-            db.session.add(user)
-            db.session.commit()
+@app.route('/token/<provider>', methods=['GET'])
+def get_auth_token(provider):
 
-        # Create the tokens we will be sending back to the user
-        access_token = create_access_token(identity=user.public_id)
-        refresh_token = create_refresh_token(identity=user.public_id)
+    if provider == 'google':
+        if not google.authorized:
+            return redirect(url_for("google.login"))
+        account_info = google.get("/oauth2/v2/userinfo")
+        if account_info.ok:
+            account_info_json = account_info.json()
+            #see if user exists, if it doesn't make a new one
+            user = User.query.filter_by(email=account_info_json['email']).first()
+            if not user:
+                user = User(provider='google',
+                            name=account_info_json['name'],
+                            email=account_info_json['email'],
+                            picture=account_info_json['picture'])
+                user.generate_public_id()
+                user.generate_created_at()
+                db.session.add(user)
+                db.session.commit()
+            # Create the tokens we will be sending back to the user
+            access_token = create_access_token(identity=user.public_id)
+            refresh_token = create_refresh_token(identity=user.public_id)
 
-        # Set the JWT cookies in the response
-        response = make_response(redirect(url_for('index')))
-        set_access_cookies(response, access_token)
-        set_refresh_cookies(response, refresh_token)
-        return response
+            # Set the JWT cookies in the response
+            response = make_response(redirect(url_for('index')))
+            set_access_cookies(response, access_token)
+            set_refresh_cookies(response, refresh_token)
+            return response
+
+    if provider == 'facebook':
+        if not facebook.authorized:
+            return redirect(url_for("facebook.login"))
+        account_info = facebook.get("/me?fields=id,name,email,picture")
+        if account_info.ok:
+            account_info_json = account_info.json()
+            # see if user exists, if it doesn't make a new one
+            user = User.query.filter_by(email=account_info_json['email']).first()
+            if not user:
+                user = User(provider='facebook',
+                            name=account_info_json['name'],
+                            email=account_info_json['email'],
+                            picture=account_info_json['picture']['data']['url'])
+                user.generate_public_id()
+                user.generate_created_at()
+                db.session.add(user)
+                db.session.commit()
+
+            # Create the tokens we will be sending back to the user
+            access_token = create_access_token(identity=user.public_id)
+            refresh_token = create_refresh_token(identity=user.public_id)
+
+            # Set the JWT cookies in the response
+            response = make_response(redirect(url_for('index')))
+            set_access_cookies(response, access_token)
+            set_refresh_cookies(response, refresh_token)
+            return response
+
+    if provider != 'facebook' or 'google':
+        return redirect(url_for('login'))
+
+
 
 @app.route('/token/refresh', methods=['GET'])
 @jwt_refresh_token_required
