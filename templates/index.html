@@ -9,7 +9,7 @@
                 <a class="links" href="{{url_for('new_category')}}">Add category</a>
                 <ul>
                     {% for category in categories %}
-                        {% if category.user_id == user.id %}
+                        {% if category.user_id == user.public_id %}
                             <li>
                                 <a href="{{url_for('category', category=category.name)}}">{{category.name}}</a>
                                 <a class="links" href="{{url_for('edit_category', category=category.name)}}">Edit</a>
@@ -30,7 +30,7 @@
                 <a class="links" href="{{url_for('new_item')}}">Add item</a>
                 <ul>
                     {% for item in items %}
-                        {% if item.user_id == user.id %}
+                        {% if item.user_id == user.public_id %}
                             <li>
                                 <a href="{{url_for('item_info', category=item.category_name, id=item.id)}}">{{item.name}}</a>
                                 <span>({{item.category_name}})</span>
@@ -38,8 +38,10 @@
                                 <a class="links" href="{{url_for('delete_item', category=item.category_name, id=item.id)}}">Delete</a>
                             </li>
                         {% else %}
-                            <a href="{{url_for('item_info', category=item.category_name, id=item.id)}}">{{item.name}}</a>
-                            <span>({{item.category_name}})</span>
+                            <li>
+                                <a href="{{url_for('item_info', category=item.category_name, id=item.id)}}">{{item.name}}</a>
+                                <span>({{item.category_name}})</span>
+                            </li>
                         {% endif %}
                     {% endfor %}
                 </ul>

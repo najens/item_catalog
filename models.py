@@ -15,11 +15,12 @@ class User(db.Model):
     name = db.Column(db.String(32), server_default='')
     email = db.Column(db.String(32), index=True, unique=True, nullable=False)
     picture = db.Column(db.String(150), server_default='')
-    roles = db.relationship('Role', secondary='user_roles',
+    roles = db.relationship('Role', cascade='all,delete', secondary='user_roles',
             backref=db.backref('users', lazy='dynamic'))
-    categories = db.relationship('Category',
+    categories = db.relationship('Category', cascade='all,delete',
             backref=db.backref('user', lazy=True))
-    items = db.relationship('Item', backref=db.backref('user', lazy=True))
+    items = db.relationship('Item', cascade='all,delete',
+            backref=db.backref('user', lazy=True))
 
     def generate_public_id(self):
         self.public_id = str(uuid.uuid4())
@@ -50,7 +51,7 @@ class Category(db.Model):
     name = db.Column(db.String(32), nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey('user.public_id'),
             nullable=False)
-    items = db.relationship('Item', backref='category', lazy=True)
+    items = db.relationship('Item', cascade='all,delete', backref='category', lazy=True)
 
 # Define Item model
 class Item(db.Model):
@@ -58,7 +59,5 @@ class Item(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(32), nullable=False)
     description = db.Column(db.String(250), nullable=False)
-    user_id = db.Column(db.Integer(), db.ForeignKey('user.public_id',
-            ondelete='CASCADE'))
-    category_name = db.Column(db.String(), db.ForeignKey('category.name',
-            ondelete='CASCADE'))
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.public_id'))
+    category_name = db.Column(db.String(), db.ForeignKey('category.name'))

@@ -12,6 +12,7 @@ from flask_jwt_extended import (
     get_jwt_identity, set_access_cookies,
     set_refresh_cookies, unset_jwt_cookies, jwt_optional
 )
+from datetime import timedelta
 
 
 # Initialize app
@@ -112,7 +113,8 @@ def get_auth_token(provider):
                 db.session.add(user)
                 db.session.commit()
             # Create the tokens we will be sending back to the user
-            access_token = create_access_token(identity=user.public_id)
+            expires = timedelta(seconds=60)
+            access_token = create_access_token(identity=user.public_id, expires_delta=expires)
             refresh_token = create_refresh_token(identity=user.public_id)
 
             # Set the JWT cookies in the response
@@ -140,7 +142,8 @@ def get_auth_token(provider):
                 db.session.commit()
 
             # Create the tokens we will be sending back to the user
-            access_token = create_access_token(identity=user.public_id)
+            expires = timedelta(seconds=60)
+            access_token = create_access_token(identity=user.public_id, expires_delta=expires)
             refresh_token = create_refresh_token(identity=user.public_id)
 
             # Set the JWT cookies in the response
@@ -179,7 +182,8 @@ def new_category():
     """ Displays page to add a new category """
     if request.method == 'POST':
         if request.form['name']:
-            new_category = Category(name=request.form['name'], user_id=1)
+            public_id = get_jwt_identity()
+            new_category = Category(name=request.form['name'], user_id=public_id)
             db.session.add(new_category)
             db.session.commit()
             return redirect(url_for('index'))
@@ -205,7 +209,8 @@ def category(category):
 def edit_category(category):
     """ Displays page to edit category """
     category_to_edit = Category.query.filter_by(name=category).one()
-    if category_to_edit.user_id != 1:
+    public_id = get_jwt_identity()
+    if category_to_edit.user_id != public_id:
         return 'You are not authorized to edit this category!'
     if request.method == 'POST':
         if request.form['name']:
@@ -220,7 +225,8 @@ def edit_category(category):
 def delete_category(category):
     """ Displays page to delete category """
     category_to_delete = Category.query.filter_by(name=category).one()
-    if category_to_delete.user_id != 1:
+    public_id = get_jwt_identity()
+    if category_to_delete.user_id != public_id:
         return "You are not authorized to delete this category!"
     if request.method == 'POST':
         db.session.delete(category_to_delete)
@@ -235,7 +241,8 @@ def new_item():
     """ Displays page to add a new item to category """
     if request.method == 'POST':
         if request.form['name'] and request.form['description'] and request.form.get('category'):
-            new_item = Item(name=request.form['name'], description=request.form['description'], category_name=request.form.get('category'), user_id=1)
+            public_id = get_jwt_identity()
+            new_item = Item(name=request.form['name'], description=request.form['description'], category_name=request.form.get('category'), user_id=public_id)
             db.session.add(new_item)
             db.session.commit()
             return redirect(url_for('index'))
@@ -254,7 +261,8 @@ def item_info(category, id):
 def edit_item(category, id):
     """ Displays page to edit item """
     item_to_edit = Item.query.filter_by(id=id).one()
-    if item_to_edit.user_id != 1:
+    public_id = get_jwt_identity()
+    if item_to_edit.user_id != public_id:
         return 'You are not authorized to edit this category!'
     if request.method == 'POST':
         if request.form['name'] and request.form['description'] and request.form.get('category'):
@@ -272,7 +280,8 @@ def edit_item(category, id):
 def delete_item(category, id):
     """ Displays page to delete item """
     item_to_delete = Item.query.filter_by(id=id).one()
-    if item_to_delete.user_id != 1:
+    public_id = get_jwt_identity()
+    if item_to_delete.user_id != public_id:
         return "You are not authorized to delete this category!"
     if request.method == 'POST':
         db.session.delete(item_to_delete)
