@@ -1,9 +1,7 @@
-from  flask import current_app
-from flask_sqlalchemy import SQLAlchemy
+from app import app
+from config import db
 import uuid
 from datetime import datetime
-
-db = SQLAlchemy()
 
 # Define User model
 class User(db.Model):
