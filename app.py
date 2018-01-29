@@ -67,11 +67,12 @@ def index():
     items = Item.query.order_by(db.desc(Item.id)).limit(10)
     # Check if user has valid access_token
     public_id = get_jwt_identity()
+    logged_in = is_logged_in(public_id)
     user = User.query.filter_by(public_id=public_id).first()
     if user:
-        return render_template('index.html', categories=categories, items=items, user=user)
+        return render_template('index.html', categories=categories, items=items, user=user, logged_in=logged_in)
     else:
-        return render_template('public_index.html', categories=categories, items=items)
+        return render_template('public_index.html', categories=categories, items=items, logged_in=logged_in)
 
 @app.route('/login')
 def login():
@@ -184,15 +185,16 @@ def logout():
 @jwt_required
 def new_category():
     """ Displays page to add a new category """
+    public_id = get_jwt_identity()
+    logged_in = is_logged_in(public_id)
     if request.method == 'POST':
         if request.form['name']:
-            public_id = get_jwt_identity()
             new_category = Category(name=request.form['name'], user_id=public_id)
             db.session.add(new_category)
             db.session.commit()
             return redirect(url_for('index'))
     else:
-        return render_template('new_category.html')
+        return render_template('new_category.html', logged_in=logged_in)
 
 @app.route('/catalog/<category>')
 @jwt_optional
@@ -202,11 +204,12 @@ def category(category):
     items = Item.query.filter_by(category_name=category).order_by(db.asc(Item.name)).all()
     # Check if user has valid access_token
     public_id = get_jwt_identity()
+    logged_in = is_logged_in(public_id)
     user = User.query.filter_by(public_id=public_id).first()
     if user:
-        return render_template('category.html', items=items, categories=categories, category=category, user=user)
+        return render_template('category.html', items=items, categories=categories, category=category, logged_in=logged_in, user=user)
     else:
-        return render_template('public_category.html', items=items, categories=categories, category=category)
+        return render_template('public_category.html', items=items, categories=categories, category=category, logged_in=logged_in)
 
 @app.route('/catalog/<category>/edit', methods=['GET', 'POST'])
 @jwt_required
@@ -214,6 +217,7 @@ def edit_category(category):
     """ Displays page to edit category """
     category_to_edit = Category.query.filter_by(name=category).one()
     public_id = get_jwt_identity()
+    logged_in = is_logged_in(public_id)
     if category_to_edit.user_id != public_id:
         return 'You are not authorized to edit this category!'
     if request.method == 'POST':
@@ -222,7 +226,7 @@ def edit_category(category):
             db.session.commit()
             return redirect(url_for('index'))
     else:
-        return render_template('edit_category.html', category=category_to_edit)
+        return render_template('edit_category.html', category=category_to_edit, logged_in=logged_in)
 
 @app.route('/catalog/<category>/delete', methods=['GET', 'POST'])
 @jwt_required
@@ -230,6 +234,7 @@ def delete_category(category):
     """ Displays page to delete category """
     category_to_delete = Category.query.filter_by(name=category).one()
     public_id = get_jwt_identity()
+    logged_in = is_logged_in(public_id)
     if category_to_delete.user_id != public_id:
         return "You are not authorized to delete this category!"
     if request.method == 'POST':
@@ -237,7 +242,7 @@ def delete_category(category):
         db.session.commit()
         return redirect(url_for('index'))
     else:
-        return render_template('delete_category.html', category=category_to_delete)
+        return render_template('delete_category.html', category=category_to_delete, logged_in=logged_in)
 
 @app.route('/catalog/item/new', methods=['GET', 'POST'])
 @jwt_required
@@ -246,7 +251,8 @@ def new_item():
     if request.method == 'POST':
         if request.form['name'] and request.form['description'] and request.form.get('category'):
             public_id = get_jwt_identity()
-            new_item = Item(name=request.form['name'], description=request.form['description'], category_name=request.form.get('category'), user_id=public_id)
+            logged_in = is_logged_in(public_id)
+            new_item = Item(name=request.form['name'], description=request.form['description'], category_name=request.form.get('category'), user_id=public_id, logged_in=logged_in)
             db.session.add(new_item)
             db.session.commit()
             return redirect(url_for('index'))
@@ -255,10 +261,13 @@ def new_item():
         return render_template('new_item.html', categories=categories)
 
 @app.route('/catalog/<category>/<int:id>')
+@jwt_optional
 def item_info(category, id):
     """ Displays page with information about item """
     item = Item.query.filter_by(id=id).one()
-    return render_template('item.html', item=item)
+    public_id = get_jwt_identity()
+    logged_in = is_logged_in(public_id)
+    return render_template('item.html', item=item, logged_in=logged_in)
 
 @app.route('/catalog/<category>/<int:id>/edit', methods=['GET', 'POST'])
 @jwt_required
@@ -266,6 +275,7 @@ def edit_item(category, id):
     """ Displays page to edit item """
     item_to_edit = Item.query.filter_by(id=id).one()
     public_id = get_jwt_identity()
+    logged_in = is_logged_in(public_id)
     if item_to_edit.user_id != public_id:
         return 'You are not authorized to edit this category!'
     if request.method == 'POST':
@@ -277,7 +287,7 @@ def edit_item(category, id):
             return redirect(url_for('index'))
     else:
         categories = Category.query.order_by(db.asc(Category.name)).all()
-        return render_template('edit_item.html', item=item_to_edit, categories=categories)
+        return render_template('edit_item.html', item=item_to_edit, categories=categories, logged_in=logged_in)
 
 @app.route('/catalog/<category>/<int:id>/delete', methods=['GET', 'POST'])
 @jwt_required
@@ -285,6 +295,7 @@ def delete_item(category, id):
     """ Displays page to delete item """
     item_to_delete = Item.query.filter_by(id=id).one()
     public_id = get_jwt_identity()
+    logged_in = is_logged_in(public_id)
     if item_to_delete.user_id != public_id:
         return "You are not authorized to delete this category!"
     if request.method == 'POST':
@@ -292,7 +303,7 @@ def delete_item(category, id):
         db.session.commit()
         return redirect(url_for('index'))
     else:
-        return render_template('delete_item.html', item=item_to_delete)
+        return render_template('delete_item.html', item=item_to_delete, logged_in=logged_in)
 
 # Turns an usafe absolute URL into a safe relative URL by removing the scheme and the hostname
 # Example: make_safe_url('http://hostname/path1/path2?q1=v1&q2=v2#fragment')
@@ -321,6 +332,12 @@ def _endpoint_url(endpoint):
     if endpoint:
         url = url_for(endpoint)
     return url
+
+def is_logged_in(public_id):
+    if public_id != None:
+        return True
+    else:
+        return False
 
 
 if __name__ == '__main__':
