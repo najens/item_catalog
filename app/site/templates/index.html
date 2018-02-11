@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block main %}
+<div class="flex-col main-container">
+    {% if logged_in %}
+    <h2>Welcome {{user.name}}!</h2>
+    {% else %}
+    <h2>Welcome!</h2>
+    {% endif %}
+    <div class="flex-row catalog">
+        <section class="category">
+            <header class="catalog-header">
+                <h3>Categories</h3>
+                <a class="links json" href="/api/v1/categories?sort=name+asc">JSON</a>
+                <br>
+            </header>
+            {% if logged_in %}
+            <div class="add-container">
+                <a class="links" href="{{url_for('site.new_category')}}">
+                    <img class="img-add" src="{{url_for('site.static', filename='img/add.png')}}" alt="Add category">
+                    <span class="add">Add Category</span>
+                </a>
+            </div>
+            {% endif %}
+            <ul id="categories" class="category-list"></ul>
+        </section>
+        <section class="item">
+            <header class="catalog-header">
+                <h3 id="item-heading">Latest Items</h3>
+                <a id="item-json" class="links json" href="/api/v1/items?sort=id+desc&count=10">JSON</a>
+                <br>
+            </header>
+            {% if logged_in %}
+            <div class="add-container">
+                <a class="links" href="{{url_for('site.new_item')}}">
+                    <img class="img-add" src="{{url_for('site.static', filename='img/add.png')}}" alt="Add item">
+                    <span class="add">Add Item</span>
+                </a>
+            </div>
+            {% endif %}
+            <ul id="items" class="item-list"></ul>
+        </section>
+    <div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    require(['config'], function() {
+        require(['pages/index/get_categories']);
+        require(['pages/index/get_items']);
+    });
+</script>
+{% endblock %}

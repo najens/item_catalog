@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block main %}
+<div id="item-container" class="flex-col main-container"></div>
+{% endblock %}
+{% block scripts %}
+<script>
+    require(['config'], function() {
+        require(['pages/item/item_get']);
+    });
+</script>
+{% endblock %}

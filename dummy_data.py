@@ -29,7 +29,11 @@ session.add(role2)
 session.commit()
 
 # User 1
-user1 = User(public_id='kdla239423dasldfjaldjla', name='Nate', email='najens@gmail.com', picture='https://scontent.fmkc1-1.fna.fbcdn.net/v/t1.0-1/p240x240/22228162_10209924202565056_2038620253250255968_n.jpg?oh=f610fe480ea1ca3474e4fe6efbc45fdc&oe=5AE095A8', roles=[role1, role2])
+user1 = User(public_id='kdla239423dasldfjaldjla',
+             name='Nate',
+             email='najens@gmail.com',
+             picture='https://scontent.fmkc1-1.fna.fbcdn.net/v/t1.0-1/p240x240/22228162_10209924202565056_2038620253250255968_n.jpg?oh=f610fe480ea1ca3474e4fe6efbc45fdc&oe=5AE095A8',  # noqa
+             roles=[role1, role2])
 session.add(user1)
 session.commit()
 
@@ -39,7 +43,8 @@ session.add(category1)
 session.commit()
 
 # Item 1
-item1 = Item(name='Soccer Cleats', description='Awesome cleats', user_id=1, category_id=1)
+item1 = Item(name='Soccer Cleats', description='Awesome cleats',
+             user_id=1, category_id=1)
 session.add(item1)
 session.commit()
 print('Added menu items!')

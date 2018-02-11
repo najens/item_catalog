@@ -1,0 +1,9 @@
+Flask==0.12.2
+Flask-Dance==0.13.0
+Flask-JWT-Extended==3.6.0
+flask-marshmallow==0.8.0
+Flask-Security==3.0.0
+Flask-SQLAlchemy==2.3.2
+marshmallow-sqlalchemy==0.13.2
+SQLAlchemy-Utils==0.32.21
+Werkzeug==0.14.1

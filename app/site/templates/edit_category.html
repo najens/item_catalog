@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block main %}
+<div class="flex-col main-container">
+    <div id="success-alert" class="alert alert-success hidden"></div>
+    <div id="error-alert" class="alert alert-error hidden"></div>
+    <br>
+    <form>
+        <div class="form-group">
+            <h3>Edit Category</h3>
+            <div class="flex-col left">
+                <h4>
+                    <label for="name">Name:</label>
+                </h4>
+                <input id="name-field" type="text" maxlength="100" value="{{category}}" autofocus required>
+            </div>
+            <div class="form-btn">
+                <button type="submit">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    require(['config'], function() {
+        require(['pages/edit_category/category_put']);
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <title id="title">Item Catalog</title>
+        <link rel="stylesheet" href="{{url_for('.static', filename='css/normalize.min.css')}}">
+        <link rel="stylesheet" href="{{url_for('.static', filename='css/app.css')}}">
+        <script src="{{url_for('site.static', filename='js/lib/require.js')}}"></script>
+        <script src="{{url_for('site.static', filename='js/config.js')}}"></script>
+        {% block scripts %}{% endblock %}
+    </head>
+    <body>
+        <div class="overflow-wrap">
+            <header>
+                <nav class="nav-bar">
+                    <div class="nav-container flex-row">
+                        <div class="flex-row">
+                            <img class="logo" src="{{url_for('site.static', filename='img/logo.png')}}" alt="Logo">
+                            <h2 class="nav-heading">Item Catalog</h2>
+                        </div>
+                        {% if logged_in %}
+                        <div class="flex-row">
+                            <img class="profile-pic" src="{{user.picture}}" alt="Profile picture">
+                            <a id="nav-btn" class="nav-button" href="{{url_for('site.logout')}}">Logout</a>
+                        </div>
+                        {% else %}
+                        <a id="nav-btn" class="nav-button" href="{{url_for('site.login')}}">Login</a>
+                        {% endif %}
+                    </div>
+                </nav>
+            </header>
+            <main>
+            {% block main %}{% endblock %}
+            </main>
+        </div>
+    </body>
+</html>
