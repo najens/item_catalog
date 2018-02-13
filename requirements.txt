@@ -7,3 +7,5 @@ Flask-SQLAlchemy==2.3.2
 marshmallow-sqlalchemy==0.13.2
 SQLAlchemy-Utils==0.32.21
 Werkzeug==0.14.1
+bs4==0.0.1
+beautifulsoup4==4.6.0
