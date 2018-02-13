@@ -1,21 +1,19 @@
-define(['jquery', 'methods', 'submitForm', 'setHeaders',
-        'editItemGetItem', 'editItemGetCategory'],
-        function($, methods, submitForm) {
+define(['jquery', 'submitForm', 'setHeaders'], function($, submitForm) {
 
-  $(document).ready(function() {
-
-    // Define html elements
-    var $nameField = $('#name-field');
-    var $descriptionField = $('#description-field');
-    var $categoryField = $('#category-field');
+  const itemPut = function(itemId) {
 
     // Process the form when button is clicked
     $('form').on('submit', (function(event) {
 
+      // Define html elements
+      var $nameField = $('#name-field');
+      var $descriptionField = $('#description-field');
+      var $categoryField = $('#category-field');
+
       // Create ajax configuration object
       var ajaxConfig = {};
       ajaxConfig.type = 'PUT';
-      ajaxConfig.url = `/api/v1/items/${methods.getItemId()}`;
+      ajaxConfig.url = `/api/v1/items/${itemId}`;
       ajaxConfig.datatype = 'json';
       ajaxConfig.data = {
         name: $nameField.val().toLowerCase(),
@@ -30,5 +28,9 @@ define(['jquery', 'methods', 'submitForm', 'setHeaders',
       event.preventDefault();
 
     }));
-  });
+
+  };
+
+  return itemPut;
+
 });

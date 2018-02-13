@@ -4,21 +4,14 @@
     <div id="success-alert" class="alert alert-success hidden"></div>
     <div id="error-alert" class="alert alert-error hidden"></div>
     <br>
-    <form>
-        <div class="form-group">
-            <h3>Are you sure you want to delete <span class="highlight">{{category}}</span>?</h3>
-            <div class="form-btn">
-                <button type="submit">Delete</button>
-            </div>
-        </div>
-    </form>
+    <form id="delete-category-form"></form>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
     require(['config'], function() {
-        require(['pages/delete_category/category_delete']);
+        require(['pages/delete_category/delete_category_get']);
     });
 </script>
 {% endblock %}

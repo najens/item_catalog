@@ -1,27 +1,30 @@
 define(['jquery', 'methods'], function($, methods) {
 
-  $(document).ready(function() {
-
-    // Define html elements
-    var $categoryField = $('#category-field');
+  const getCategory = function(categoryName) {
 
     // Send get request to server
     $.getJSON('/api/v1/categories?sort=name+asc')
 
     // If request successful, load form with data
     .done(function(data) {
+      // Define html elements
+      var $categoryField = $('#category-field');
       var categories = [];
       $.each(data.categories, function(key, val) {
-        if (val.name == methods.getCategoryName()) {
+
+        var category = val.name
+        var categoryCap = methods.toTitleCase(category)
+
+        if (val.name == categoryName) {
           var htmlString = `
-          <option selected value="${val.name}">
-            ${methods.toTitleCase(val.name)}
+          <option selected value="${category}">
+            ${categoryCap}
           </option>
           `;
         } else {
           var htmlString = `
-          <option value="${val.name}">
-            ${methods.toTitleCase(val.name)}
+          <option value="${category}">
+            ${categoryCap}
           </option>
           `;
         }
@@ -37,5 +40,8 @@ define(['jquery', 'methods'], function($, methods) {
       }
     });
 
-  });
+  };
+
+  return getCategory;
+
 });

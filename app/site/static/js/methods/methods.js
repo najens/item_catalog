@@ -22,11 +22,6 @@ define(function() {
     return cookieValue;
   }
 
-  // Capitalize first letter in string
-  const capitalizeFirstLetter = function(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1);
-  }
-
   // Capitalize first letter of all strings
   const toTitleCase = function(str) {
       return str.replace(/\w\S*/g, function(txt){
@@ -53,26 +48,17 @@ define(function() {
   const getCategoryName = function() {
     var items = splitPath();
     var categoryName = items[0];
+    categoryName = decodeURI(categoryName);
     return categoryName;
-  }
-
-  // Get category id from url
-  const getCategoryId = function() {
-    var search = $(location).attr('search');
-    var pieces = search.split('=');
-    var id = pieces[1];
-    return id;
   }
 
   // Create object of methods
   var methods = {};
   methods.createCookieObject = createCookieObject
   methods.getCookie = getCookie
-  methods.capitalizeFirstLetter = capitalizeFirstLetter
   methods.toTitleCase = toTitleCase
   methods.getItemId = getItemId
   methods.getCategoryName = getCategoryName
-  methods.getCategoryId = getCategoryId
 
   return methods;
 

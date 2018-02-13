@@ -1,16 +1,16 @@
 define(
-  ['jquery', 'submitForm', 'setHeaders', 'newItemGet'],
+  ['jquery', 'submitForm', 'setHeaders'],
   function($, submitForm) {
 
-  $(document).ready(function() {
-
-    //Define html elements
-    var $nameField = $('#name-field');
-    var $descriptionField = $('#description-field');
-    var $categoryField = $('#category-field');
+  const itemPost = function() {
 
     // Process the form when button is clicked
     $('form').on('submit', (function(event) {
+
+      //Define html elements
+      var $nameField = $('#name-field');
+      var $descriptionField = $('#description-field');
+      var $categoryField = $('#category-field');
 
       // Create ajax configuration object
       var ajaxConfig = {};
@@ -30,5 +30,9 @@ define(
       event.preventDefault();
 
     }));
-  });
+
+  };
+
+  return itemPost;
+
 });

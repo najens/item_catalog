@@ -5,7 +5,7 @@ from flask_jwt_extended import jwt_required, jwt_optional, get_jwt_identity
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from app.api import api
-from app.api.functions import is_html
+from app.api.functions import is_html, cap_sentence
 
 
 @api.route('/categories', methods=['POST'])
@@ -14,6 +14,7 @@ def create_new_category():
     """ Create new category and return the new category object """
     public_id = get_jwt_identity()
     name = request.form['name']
+    name_cap = cap_sentence(name)
 
     if name:
 
@@ -29,7 +30,7 @@ def create_new_category():
 
         except IntegrityError:
             return jsonify(
-                {'error': 'Category named %s already exists!' % name}
+                {'error': 'Category named %s already exists!' % name_cap}
             ), 422
 
         except SQLAlchemyError:
@@ -40,7 +41,7 @@ def create_new_category():
         resp = make_response(jsonify(
             {
                 'category': output,
-                'success': 'Category named %s has been created!' % name
+                'success': 'Category named %s has been created!' % name_cap
             }
         ), 201)
         resp.headers['Location'] = (
@@ -179,6 +180,7 @@ def edit_one_category(id):
         return jsonify({'error': 'Some problem occurred!'}), 400
 
     name = request.form['name']
+    nameCap = cap_sentence(name)
 
     if name:
 
@@ -193,14 +195,14 @@ def edit_one_category(id):
 
         except IntegrityError:
             return jsonify(
-                {'error': 'Category named %s already exists!' % name}
+                {'error': 'Category named %s already exists!' % nameCap}
             ), 422
 
         except SQLAlchemyError:
             return jsonify({'error': 'Some problem occurred!'}), 400
 
         return jsonify(
-            {'success': 'The category %s has been updated!' % name}
+            {'success': 'The category named %s has been updated!' % nameCap}
         ), 200
 
     return jsonify({'error': 'Missing data!'}), 400
@@ -215,6 +217,8 @@ def delete_one_category(id):
 
     try:
         category = query.one()
+        name = category.name
+        nameCap = cap_sentence(name)
 
     except NoResultFound:
         return jsonify({'error': 'No result found!'}), 404
@@ -230,5 +234,5 @@ def delete_one_category(id):
         return jsonify({'error': 'Some problem occurred!'}), 400
 
     return jsonify(
-        {'success': 'The category %s has been deleted!' % category.name}
+        {'success': 'The category named %s has been deleted!' % nameCap}
     ), 200

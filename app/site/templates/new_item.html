@@ -4,35 +4,13 @@
     <div id="success-alert" class="alert alert-success hidden"></div>
     <div id="error-alert" class="alert alert-error hidden"></div>
     <br>
-    <form>
-        <div class="form-group">
-            <h3>New Item</h3>
-            <div class="flex-col left">
-                <h4>
-                    <label for="name">Name:</label>
-                </h4>
-                <input id="name-field" type="text" size="26" maxlength="100" name="name" autofocus required>
-                <h4>
-                    <label for="description">Description:</label>
-                </h4>
-                <textarea id="description-field" name="description" rows="5" cols="30" maxlength="200" required></textarea>
-                <h4>
-                    <label for="category">Category:</label>
-                </h4>
-                <select id="category-field" name="category">
-                </select>
-            </div>
-            <div class="form-btn">
-                <button type="submit">Submit</button>
-            </div>
-        </div>
-    </form>
+    <form id="new-item-form"></form>
 </div>
 {% endblock %}
 {% block scripts %}
 <script>
     require(['config'], function() {
-        require(['pages/new_item/item_post']);
+        require(['pages/new_item/new_item_get']);
     });
 </script>
 {% endblock %}

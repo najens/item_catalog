@@ -21,6 +21,7 @@ define(['jquery', 'methods'], function($, methods) {
         var category = val.name;
         var categoryCap = methods.toTitleCase(category);
         var id = val.id;
+        var htmlId = `category-${id}`
         var link = val.link;
         var itemListLength = val.items.length;
 
@@ -28,14 +29,14 @@ define(['jquery', 'methods'], function($, methods) {
         if (methods.getCookie('public_id') === public_id) {
           var htmlString = `
             <li>
-              <span id='${category}-category' class='categories'>
+              <span id='${htmlId}' class='categories'>
                 ${categoryCap}
               </span>
               <a class='links json' href='${link}'>JSON</a>
-              <a class='links edit' href='/${category}/edit?id=${id}'>
+              <a class='links edit' href='/${category}/edit'>
                 Edit
               </a>
-              <a class='links delete' href='/${category}/delete?id=${id}'>
+              <a class='links delete' href='/${category}/delete'>
                 Delete
               </a>
             </li>
@@ -44,7 +45,7 @@ define(['jquery', 'methods'], function($, methods) {
         } else {
           var htmlString = `
             <li>
-              <span id='${category}-category' class='categories'>
+              <span id='${htmlId}' class='categories'>
                 ${categoryCap}
               </span>
               <a class='links json' href='${link}'>JSON</a>
@@ -54,7 +55,7 @@ define(['jquery', 'methods'], function($, methods) {
         }
 
         // For each category displayed add a click function
-        $categories.on("click", `#${category}-category`, function() {
+        $categories.on("click", `#${htmlId}`, function() {
 
           // Send get request to server
           $.getJSON(`/api/v1/items?category=${category}&sort=name+asc`)

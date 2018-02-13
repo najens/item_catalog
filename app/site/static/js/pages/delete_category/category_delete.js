@@ -1,7 +1,7 @@
-define(['jquery', 'methods', 'submitForm', 'setHeaders'],
-  function($, methods, submitForm) {
+define(['jquery', 'submitForm', 'setHeaders'],
+  function($, submitForm) {
 
-  $(document).ready(function() {
+  const categoryDelete = function(categoryId) {
 
     // Process the form when button is clicked
     $('form').on('submit', (function(event) {
@@ -9,7 +9,7 @@ define(['jquery', 'methods', 'submitForm', 'setHeaders'],
       // Create ajax configuration object
       var ajaxConfig = {};
       ajaxConfig.type = 'DELETE';
-      ajaxConfig.url = `/api/v1/categories/${methods.getCategoryId()}`;
+      ajaxConfig.url = `/api/v1/categories/${categoryId}`;
       ajaxConfig.datatype = 'json';
 
       // Send ajax request to server
@@ -19,5 +19,9 @@ define(['jquery', 'methods', 'submitForm', 'setHeaders'],
       event.preventDefault();
 
     }));
-  });
+
+  }
+
+  return categoryDelete;
+
 });

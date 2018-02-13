@@ -1,19 +1,19 @@
 define(
-  ['jquery', 'methods', 'submitForm', 'setHeaders'],
-  function($, methods, submitForm) {
+  ['jquery', 'submitForm', 'setHeaders'],
+  function($, submitForm) {
 
-  $(document).ready(function() {
-
-    // Define html elements
-    var $nameField = $('#name-field');
+  const categoryPut = function(categoryId) {
 
     // Process the form when button is clicked
     $('form').on('submit', (function(event) {
 
+      // Define html elements
+      var $nameField = $('#name-field');
+
       // Create ajax configuration object
       var ajaxConfig = {};
       ajaxConfig.type = 'PUT';
-      ajaxConfig.url = `/api/v1/categories/${methods.getCategoryId()}`;
+      ajaxConfig.url = `/api/v1/categories/${categoryId}`;
       ajaxConfig.datatype = 'json';
       ajaxConfig.data = {
         name: $nameField.val().toLowerCase()
@@ -26,5 +26,9 @@ define(
       event.preventDefault();
 
     }));
-  });
+
+  };
+
+  return categoryPut;
+
 });

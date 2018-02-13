@@ -18,9 +18,11 @@ requirejs.config({
         formAlerts: 'forms/form_alerts',
         submitForm: 'forms/submit_form',
         setHeaders: 'headers/set_headers',
-        newItemGet: 'pages/new_item/new_item_get',
-        deleteItemGet: 'pages/delete_item/delete_item_get',
-        editItemGetItem: 'pages/edit_item/edit_item_get_item',
+        categoryPut: 'pages/edit_category/category_put',
+        categoryDelete: 'pages/delete_category/category_delete',
+        itemPost: 'pages/new_item/item_post',
+        itemDelete: 'pages/delete_item/item_delete',
+        itemPut: 'pages/edit_item/item_put',
         editItemGetCategory: 'pages/edit_item/edit_item_get_category'
     }
 });

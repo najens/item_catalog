@@ -1,47 +1,46 @@
-define(['jquery', 'methods', 'itemDelete'], function($, methods, itemDelete) {
+define(
+  ['jquery', 'methods', 'categoryDelete'],
+  function($, methods, categoryDelete) {
 
   $(document).ready(function() {
 
-    // Get item Id from url
-    var itemId = methods.getItemId();
+    // Get category name from url
+    var categoryName = methods.getCategoryName();
 
     // Define html elements
-    var $form = $('#delete-item-form');
+    var $form = $('#delete-category-form');
     var $errorAlert = $('#error-alert');
 
     // Send get request to server
-    $.getJSON(`/api/v1/items/${itemId}`)
+    $.getJSON(`/api/v1/categories?name=${categoryName}&count=1`)
 
-    // If request successful, load form with delete prompt
+    // If request successful, load form with data
     .done(function(data){
-      var itemId = data.item.id;
-      var itemName = data.item.name;
-      var itemNameCap = methods.toTitleCase(itemName);
-      var public_id = data.item.user_id;
+      var category = data.categories[0];
+      var categoryId = category.id;
+      var public_id = category.user_id;
+      var categoryNameCap = methods.toTitleCase(categoryName);
 
       if (methods.getCookie('public_id') === public_id) {
-
         var htmlString = `
         <div class="form-group">
-          <h3>
-            Are you sure you want to delete
-            <span>${itemNameCap}</span>?
+          <h3>Are you sure you want to delete
+            <span class="highlight">${categoryNameCap}</span>?
           </h3>
           <div class="form-btn">
             <button type="submit">Delete</button>
           </div>
         </div>
-        `;
-
+        `
         $form.append(htmlString);
 
-        itemDelete(itemId);
+        // Send ajax request to server when form is submitted
+        categoryDelete(categoryId);
 
       } else {
         var alert = 'You are not authorized to view this page!'
         $errorAlert.text(alert).show();
       }
-
     })
 
     // If request failed, display error in console
@@ -52,5 +51,4 @@ define(['jquery', 'methods', 'itemDelete'], function($, methods, itemDelete) {
     });
 
   });
-
 });

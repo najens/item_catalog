@@ -5,7 +5,7 @@ from flask_jwt_extended import jwt_required, jwt_optional, get_jwt_identity
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from app.api import api
-from app.api.functions import is_html
+from app.api.functions import is_html, cap_sentence
 
 
 @api.route('/items', methods=['POST'])
@@ -14,6 +14,7 @@ def create_new_item():
     """ Create new item and return the new item object """
     public_id = get_jwt_identity()
     name = request.form['name']
+    nameCap = cap_sentence(name)
     description = request.form['description']
     category = request.form['category']
     if name and category and description:
@@ -35,7 +36,7 @@ def create_new_item():
 
         except IntegrityError:
             return jsonify(
-                {'error': 'Item named %s already exists!' % name}
+                {'error': 'Item named %s already exists!' % nameCap}
             ), 422
 
         except SQLAlchemyError:
@@ -46,7 +47,7 @@ def create_new_item():
         resp = make_response(jsonify(
             {
                 'item': output,
-                'success': 'Item named %s has been created!' % name
+                'success': 'Item named %s has been created!' % nameCap
             }
         ), 201)
         resp.headers['Location'] = (
@@ -202,6 +203,7 @@ def edit_one_item(id):
     try:
 
         name = request.form['name']
+        nameCap = cap_sentence(name)
         description = request.form['description']
         category = request.form['category']
 
@@ -236,14 +238,14 @@ def edit_one_item(id):
 
     except IntegrityError:
         return jsonify(
-            {'error': 'Item named %s already exists!' % name}
+            {'error': 'Item named %s already exists!' % nameCap}
         ), 422
 
     except SQLAlchemyError:
         return jsonify({'error': 'Some problem occurred!'}), 400
 
     return jsonify(
-        {'success': 'Item named %s has been updated!' % name}
+        {'success': 'Item named %s has been updated!' % nameCap}
     ), 200
 
 
@@ -256,6 +258,8 @@ def delete_one_item(id):
 
     try:
         item = query.one()
+        name = item.name
+        nameCap = cap_sentence(name)
 
     except NoResultFound:
         return jsonify({'error': 'No result found!'}), 404
@@ -271,5 +275,5 @@ def delete_one_item(id):
         return jsonify({'error': 'Some problem occurred!'}), 400
 
     return jsonify(
-        {'success': 'Item named %s been deleted!' % item.name}
+        {'success': 'Item named %s been deleted!' % nameCap}
     ), 200

@@ -1,11 +1,11 @@
 define(
-  ['jquery', 'methods', 'submitForm', 'setHeaders', 'deleteItemGet'],
-  function($, methods, submitForm) {
+  ['jquery', 'submitForm', 'setHeaders'],
+  function($, submitForm) {
 
-  $(document).ready(function() {
+  const itemDelete = function(itemId) {
 
     // Define html elements
-    var $form = $('#form');
+    var $form = $('#delete-item-form');
 
     // Process the form when button is clicked
     $('form').on('submit', (function(event) {
@@ -13,7 +13,7 @@ define(
       // Create ajax configuration object
       var ajaxConfig = {};
       ajaxConfig.type = 'DELETE';
-      ajaxConfig.url = `/api/v1/items/${methods.getItemId()}`;
+      ajaxConfig.url = `/api/v1/items/${itemId}`;
       ajaxConfig.datatype = 'json';
 
       // Send ajax request to server
@@ -23,5 +23,9 @@ define(
       event.preventDefault();
 
     }));
-  });
+
+  };
+
+  return itemDelete;
+
 });
