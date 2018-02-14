@@ -33,6 +33,7 @@ class User(UserMixin, db.Model):
     )
 
     def generate_public_id(self):
+        """Generates random public id"""
         self.public_id = str(uuid.uuid4())
 
 
@@ -58,6 +59,7 @@ class UserRoles(db.Model):
     )
 
 
+# Define OAuth model
 class OAuth(OAuthConsumerMixin, db.Model):
     provider_user_id = db.Column(db.String(120), nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey('user.public_id'))
@@ -92,6 +94,7 @@ class Item(db.Model):
     category_name = db.Column(db.String(), db.ForeignKey('category.name'))
 
 
+# Define UserSchema
 class UserSchema(ma.ModelSchema):
     class Meta:
         model = User
@@ -102,16 +105,19 @@ class UserSchema(ma.ModelSchema):
     categories = fields.Nested('CategorySchema', many=True, load=True)
 
 
+# Define RoleSchema
 class RoleSchema(ma.ModelSchema):
     class Meta:
         model = Role
 
 
+# Define UserRolesSchema
 class UserRolesSchema(ma.ModelSchema):
     class Meta:
         model = UserRoles
 
 
+# Define Category Schema
 class CategorySchema(ma.ModelSchema):
     class Meta:
         ordered = True
@@ -121,6 +127,7 @@ class CategorySchema(ma.ModelSchema):
     items = fields.Nested('ItemSchema', many=True, load=True)
 
 
+# Define ItemSchema
 class ItemSchema(ma.ModelSchema):
     class Meta:
         ordered = True

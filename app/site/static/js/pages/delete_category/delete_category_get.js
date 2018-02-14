@@ -1,54 +1,65 @@
-define(
-  ['jquery', 'methods', 'categoryDelete'],
-  function($, methods, categoryDelete) {
+// Load required dependencies
+define(["jquery", "methods", "categoryDelete"],
+    /**
+     * @description get category and delete it when form is submitted
+     * @param $ jQuery from jquery module
+     * @param {!ObjType} methods object of methods from methods module
+     * @callback categoryDelete function that deletes category
+     */
+    function($, methods, categoryDelete) {
 
-  $(document).ready(function() {
+        $(document).ready(function() {
 
-    // Get category name from url
-    var categoryName = methods.getCategoryName();
+            // Get category name from url
+            const categoryName = methods.getCategoryName();
 
-    // Define html elements
-    var $form = $('#delete-category-form');
-    var $errorAlert = $('#error-alert');
+            // Send get request to server
+            $.getJSON(`/api/v1/categories?name=${categoryName}&count=1`)
 
-    // Send get request to server
-    $.getJSON(`/api/v1/categories?name=${categoryName}&count=1`)
+            // If request successful, load form with data
+            .done(function(data){
 
-    // If request successful, load form with data
-    .done(function(data){
-      var category = data.categories[0];
-      var categoryId = category.id;
-      var public_id = category.user_id;
-      var categoryNameCap = methods.toTitleCase(categoryName);
+                const public_id = data.categories[0].user_id;
 
-      if (methods.getCookie('public_id') === public_id) {
-        var htmlString = `
-        <div class="form-group">
-          <h3>Are you sure you want to delete
-            <span class="highlight">${categoryNameCap}</span>?
-          </h3>
-          <div class="form-btn">
-            <button type="submit">Delete</button>
-          </div>
-        </div>
-        `
-        $form.append(htmlString);
+                // If user id mathes category user id, display form
+                if (methods.getCookie("public_id") === public_id) {
 
-        // Send ajax request to server when form is submitted
-        categoryDelete(categoryId);
+                    const categoryId = data.categories[0].id;
+                    let categoryName = data.categories[0].name;
+                    categoryName = methods.toTitleCase(categoryName);
+                    const htmlString = `
+                    <div class="form-group">
+                        <h3>Are you sure you want to delete
+                            <span class="highlight">${categoryName}</span>?
+                        </h3>
+                        <div class="form-btn">
+                            <button type="submit">Delete</button>
+                        </div>
+                    </div>
+                    `;
 
-      } else {
-        var alert = 'You are not authorized to view this page!'
-        $errorAlert.text(alert).show();
-      }
-    })
+                    // Insert html onto page
+                    $("#delete-category-form").append(htmlString);
 
-    // If request failed, display error in console
-    .fail(function(error) {
-      if (error.responseJSON.error) {
-        console.log('Error: ' + error.responseJSON.error);
-      }
-    });
+                    // Send ajax request to server when form is submitted
+                    categoryDelete(categoryId);
 
-  });
-});
+                // If user id does not match category user id, display error
+                } else {
+
+                    const alert = "You are not authorized to view this page!";
+
+                    // Display error alert on page
+                    $("#error-alert").text(alert).show();
+                }
+            })
+
+            // If request failed, display error in console
+            .fail(function(error) {
+                if (error.responseJSON.error) {
+                    console.log(`Error: ${error.responseJSON.error}`);
+                }
+            });
+        });
+    }
+);

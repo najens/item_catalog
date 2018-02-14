@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block main %}
 <div class="flex-col main-container">
+    <!-- If user is logged in, display user name -->
     {% if logged_in %}
     <h2>Welcome {{user.name}}!</h2>
     {% else %}
@@ -13,6 +14,7 @@
                 <a class="links json" href="/api/v1/categories?sort=name+asc">JSON</a>
                 <br>
             </header>
+            <!-- If user is logged in, display link to add categories -->
             {% if logged_in %}
             <div class="add-container">
                 <a class="links" href="{{url_for('site.new_category')}}">
@@ -29,6 +31,7 @@
                 <a id="item-json" class="links json" href="/api/v1/items?sort=id+desc&count=10">JSON</a>
                 <br>
             </header>
+            <!-- If user is logged in display link to add items -->
             {% if logged_in %}
             <div class="add-container">
                 <a class="links" href="{{url_for('site.new_item')}}">
@@ -42,6 +45,8 @@
     <div>
 </div>
 {% endblock %}
+
+<!-- Load script to verify user's items and categories and loads them on page -->
 {% block scripts %}
 <script>
     require(['config'], function() {

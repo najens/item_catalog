@@ -29,21 +29,24 @@ def refresh():
     # Create the new access token
     public_id = get_jwt_identity()
     access_token = create_access_token(identity=public_id)
+
     # Set the JWT access cookie in the response
     safe_next = _get_safe_next_param('next', 'site.index')
     response = make_response(redirect(safe_next))
     set_access_cookies(response, access_token)
+
     return response
 
 
 @site.route('/token/remove', methods=['GET'])
 def logout():
-    '''Sends a response to the user to delete access and refresh
-    tokens and then returns them to the home page'''
+    '''Logs out user and sends a response to clear access and refresh
+    tokens, public_id cookie, and then returns them to the home page'''
     logout_user()
     response = make_response(redirect(url_for('site.index')))
     response.delete_cookie('public_id')
     unset_jwt_cookies(response)
+
     return response
 
 
@@ -52,6 +55,7 @@ def make_safe_url(url):
     relative URL by removing the scheme and hostname'''
     parts = urlsplit(url)
     safe_url = urlunsplit(('', '', parts.path, parts.query, parts.fragment))
+
     return safe_url
 
 
@@ -64,6 +68,7 @@ def _get_safe_next_param(param_name, default_endpoint):
     else:
         # Return URL of default endpoint
         safe_next = _endpoint_url(default_endpoint)
+
     return safe_next
 
 
@@ -72,4 +77,5 @@ def _endpoint_url(endpoint):
     url = url_for('site.index')
     if endpoint:
         url = url_for(endpoint)
+
     return url

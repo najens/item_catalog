@@ -13,7 +13,10 @@ def load_user(user_id):
 
 @site.before_request
 def before_request():
-
+    """
+    Assign user and logged in status to
+    g variable before each request.
+    """
     if current_user.is_authenticated:
         g.user = current_user
         g.logged_in = True
@@ -24,12 +27,15 @@ def before_request():
 
 @site.route('/login')
 def login():
-    """ Displays the login page """
+    """
+    Displays the login page.
+    This is a public non-protected endpoint.
+    """
     return render_template('login.html'), 200
 
 
 def authenticated():
-    """ Check if user is logged in """
+    """Check if user is logged in"""
     logged_in = False
     if hasattr(g, 'logged_in'):
         if g.logged_in:

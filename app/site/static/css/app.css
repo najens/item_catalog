@@ -2,9 +2,6 @@
 * primary green: #439889;
 * primary dark-green: #003d33;
 * primary light-green: #439889;
-* primary dark-grey: #263238;
-* dark-grey: #444649;
-* medium-grey: #616161;
 * light-grey: #eceff1;
 */
 
@@ -65,11 +62,11 @@ a {
 }
 
 a:hover {
-    opacity: .8;
     box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+    opacity: .8;
 }
 
-/*** Common ***/
+/*** Commonly used classes ***/
 .overflow-wrap {
     overflow-x: hidden;
 }
@@ -273,8 +270,8 @@ a:hover {
 
 .add {
     color: #62b01e;
-    font-weight: bold;
     font-size: 1rem;
+    font-weight: bold;
     padding-left: 8px;
     vertical-align: top;
 }
@@ -365,8 +362,5 @@ textarea {
 @media screen and (min-width: 38.214em) {
     html {
         font-size: 1em;
-    }
-    section .container {
-        max-width: 50rem;
     }
 }

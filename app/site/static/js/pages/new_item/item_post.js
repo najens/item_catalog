@@ -1,38 +1,39 @@
-define(
-  ['jquery', 'submitForm', 'setHeaders'],
-  function($, submitForm) {
+// Load required dependencies
+define(["jquery", "submitForm", "setHeaders"],
+    /**
+     * @description setup file to be used as module
+     * @param $ jQuery from jquery module
+     * @callback submitForm function from submitForm module
+     * @return itemPost function to define itemPost module
+     */
+    function($, submitForm) {
 
-  const itemPost = function() {
+        const itemPost = function() {
 
-    // Process the form when button is clicked
-    $('form').on('submit', (function(event) {
+            // Process the form when button is clicked
+            $("form").on("submit", (function(event) {
 
-      //Define html elements
-      var $nameField = $('#name-field');
-      var $descriptionField = $('#description-field');
-      var $categoryField = $('#category-field');
+                // Create ajax configuration object
+                const ajaxConfig = {
+                    type: "POST",
+                    url: "/api/v1/items",
+                    datatype: "json",
+                    data: {
+                        name: $("#name-field").val().toLowerCase(),
+                        description: $("#description-field").val(),
+                        category: $("#category-field").val().toLowerCase()
+                    }
+                };
 
-      // Create ajax configuration object
-      var ajaxConfig = {};
-      ajaxConfig.type = 'POST';
-      ajaxConfig.url = '/api/v1/items';
-      ajaxConfig.datatype = 'json';
-      ajaxConfig.data = {
-        name: $nameField.val().toLowerCase(),
-        description: $descriptionField.val(),
-        category: $categoryField.val().toLowerCase()
-      };
+                // Send ajax request to server
+                submitForm(ajaxConfig);
 
-      // Send ajax request to server
-      submitForm(ajaxConfig);
+                // Override default form functionality
+                event.preventDefault();
+            }));
+        };
 
-      // Override default form functionality
-      event.preventDefault();
-
-    }));
-
-  };
-
-  return itemPost;
-
-});
+        // Return itemPost function
+        return itemPost;
+    }
+);

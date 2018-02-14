@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="{{url_for('.static', filename='css/app.css')}}">
         <script src="{{url_for('site.static', filename='js/lib/require.js')}}"></script>
         <script src="{{url_for('site.static', filename='js/config.js')}}"></script>
+        <!-- All other scripts will be loaded asyncrhonously -->
         {% block scripts %}{% endblock %}
     </head>
     <body>
@@ -19,11 +20,13 @@
                             <img class="logo" src="{{url_for('site.static', filename='img/logo.png')}}" alt="Logo">
                             <h2 class="nav-heading">Item Catalog</h2>
                         </div>
+                        <!-- If user is logged in, display profile picture and log out button -->
                         {% if logged_in %}
                         <div class="flex-row">
                             <img class="profile-pic" src="{{user.picture}}" alt="Profile picture">
                             <a id="nav-btn" class="nav-button" href="{{url_for('site.logout')}}">Logout</a>
                         </div>
+                        <!-- If user is not logged in, display log in button -->
                         {% else %}
                         <a id="nav-btn" class="nav-button" href="{{url_for('site.login')}}">Login</a>
                         {% endif %}

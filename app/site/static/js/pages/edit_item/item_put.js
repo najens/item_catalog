@@ -1,36 +1,43 @@
-define(['jquery', 'submitForm', 'setHeaders'], function($, submitForm) {
+// Load required dependencies
+define(["jquery", "submitForm", "setHeaders"],
+    /**
+     * @description setup file to be used as module
+     * @param $ jQuery from jquery module
+     * @callback submitForm function from submitForm module
+     * @return itemPut function to define itemPut module
+     */
+    function($, submitForm) {
 
-  const itemPut = function(itemId) {
+        /**
+         * @description send ajax request to edit item
+         * @param {string} itemId id of item
+         */
+        const itemPut = function(itemId) {
 
-    // Process the form when button is clicked
-    $('form').on('submit', (function(event) {
+            // Process the form when button is clicked
+            $("form").on("submit", (function(event) {
 
-      // Define html elements
-      var $nameField = $('#name-field');
-      var $descriptionField = $('#description-field');
-      var $categoryField = $('#category-field');
+                // Create ajax configuration object
+                var ajaxConfig = {
+                    type: "PUT",
+                    url: `/api/v1/items/${itemId}`,
+                    datatype: "json",
+                    data: {
+                        name: $("#name-field").val().toLowerCase(),
+                        description: $("#description-field").val(),
+                        category: $("#category-field").val().toLowerCase()
+                    }
+                };
 
-      // Create ajax configuration object
-      var ajaxConfig = {};
-      ajaxConfig.type = 'PUT';
-      ajaxConfig.url = `/api/v1/items/${itemId}`;
-      ajaxConfig.datatype = 'json';
-      ajaxConfig.data = {
-        name: $nameField.val().toLowerCase(),
-        description: $descriptionField.val(),
-        category: $categoryField.val().toLowerCase()
-      };
+                // Send ajax request to server
+                submitForm(ajaxConfig);
 
-      // Send ajax request to server
-      submitForm(ajaxConfig);
+                // Override default form functionality
+                event.preventDefault();
+            }));
+        };
 
-      // Override default form functionality
-      event.preventDefault();
-
-    }));
-
-  };
-
-  return itemPut;
-
-});
+        // Return itemPut function
+        return itemPut;
+    }
+);

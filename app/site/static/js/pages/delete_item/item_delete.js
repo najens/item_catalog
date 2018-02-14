@@ -1,31 +1,38 @@
-define(
-  ['jquery', 'submitForm', 'setHeaders'],
-  function($, submitForm) {
+// Load required dependencies
+define(["jquery", "submitForm", "setHeaders"],
+    /**
+     * @description setup file to be used as module
+     * @param $ jQuery from jquery module
+     * @callback submitForm function from submitForm module
+     * @return itemDelete function to define itemDelete module
+     */
+    function($, submitForm) {
 
-  const itemDelete = function(itemId) {
+        /**
+         * @description send ajax request to delete item
+         * @param {string} itemId id of item
+         */
+        const itemDelete = function(itemId) {
 
-    // Define html elements
-    var $form = $('#delete-item-form');
+            // Process the form when button is clicked
+            $("form").on("submit", (function(event) {
 
-    // Process the form when button is clicked
-    $('form').on('submit', (function(event) {
+                // Create ajax configuration object
+                const ajaxConfig = {
+                    type: "DELETE",
+                    url: `/api/v1/items/${itemId}`,
+                    datatype: "json"
+                };
 
-      // Create ajax configuration object
-      var ajaxConfig = {};
-      ajaxConfig.type = 'DELETE';
-      ajaxConfig.url = `/api/v1/items/${itemId}`;
-      ajaxConfig.datatype = 'json';
+                // Send ajax request to server
+                submitForm(ajaxConfig);
 
-      // Send ajax request to server
-      submitForm(ajaxConfig);
+                // Override default form functionality
+                event.preventDefault();
+            }));
+        };
 
-      // Override default form functionality
-      event.preventDefault();
-
-    }));
-
-  };
-
-  return itemDelete;
-
-});
+        // Return itemDelete function
+        return itemDelete;
+    }
+);

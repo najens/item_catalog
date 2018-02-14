@@ -1,47 +1,66 @@
-define(['jquery', 'methods'], function($, methods) {
+// Load required dependencies
+define(["jquery", "methods"],
+    /**
+     * @description setup file to be used as requirejs module
+     * @param $ jQuery from jquery module
+     * @param {!ObjType} methods object of methods from methods module
+     * @return getCategory function to define getCategory module
+     */
+    function($, methods) {
 
-  const getCategory = function(categoryName) {
+        /**
+         * @description send ajax request to get category
+         * @param {string} categoryName name of category
+         */
+        const getCategory = function(categoryName) {
 
-    // Send get request to server
-    $.getJSON('/api/v1/categories?sort=name+asc')
+            // Send get request to server
+            $.getJSON("/api/v1/categories?sort=name+asc")
 
-    // If request successful, load form with data
-    .done(function(data) {
-      // Define html elements
-      var $categoryField = $('#category-field');
-      var categories = [];
-      $.each(data.categories, function(key, val) {
+            // If request successful, load form with data
+            .done(function(data) {
 
-        var category = val.name
-        var categoryCap = methods.toTitleCase(category)
+                var categories = [];
 
-        if (val.name == categoryName) {
-          var htmlString = `
-          <option selected value="${category}">
-            ${categoryCap}
-          </option>
-          `;
-        } else {
-          var htmlString = `
-          <option value="${category}">
-            ${categoryCap}
-          </option>
-          `;
-        }
-        categories.push(htmlString);
-      });
-      $categoryField.append(categories);
-    })
+                // Create html option for each category and append to list
+                $.each(data.categories, function(key, val) {
 
-    // If request failed, display error in console
-    .fail(function(error) {
-      if (error.responseJSON.error) {
-        console.log('Error: ' + error.responseJSON.error);
-      }
-    });
+                    var category = val.name
+                    var categoryCap = methods.toTitleCase(category)
 
-  };
+                    // If category matches current category, select it
+                    if (category == categoryName) {
 
-  return getCategory;
+                        const htmlString = `
+                        <option selected value="${category}">
+                            ${categoryCap}
+                        </option>
+                        `;
+                    } else {
+                        const htmlString = `
+                        <option value="${category}">
+                            ${categoryCap}
+                        </option>
+                        `;
+                    }
 
-});
+                    // Add html to list
+                    categories.push(htmlString);
+                });
+
+                // Insert html onto page
+                $("#category-field").append(categories);
+            })
+
+            // If request failed, display error in console
+            .fail(function(error) {
+                if (error.responseJSON.error) {
+                    console.log(`Error: ${error.responseJSON.error}`);
+                }
+            });
+        };
+
+        // Return getCategory function
+        return getCategory;
+    }
+);

@@ -1,56 +1,66 @@
-define(['jquery', 'methods', 'itemDelete'], function($, methods, itemDelete) {
+// Load required dependencies
+define(["jquery", "methods", "itemDelete"],
+    /**
+     * @description get item and delete it when form is submitted
+     * @param $ jQuery from jquery module
+     * @param {!ObjType} methods object of methods from methods module
+     * @callback itemDelete function that deletes item
+     */
+    function($, methods, itemDelete) {
 
-  $(document).ready(function() {
+        $(document).ready(function() {
 
-    // Get item Id from url
-    var itemId = methods.getItemId();
+            // Get item Id from url
+            const itemId = methods.getItemId();
 
-    // Define html elements
-    var $form = $('#delete-item-form');
-    var $errorAlert = $('#error-alert');
+            // Send get request to server
+            $.getJSON(`/api/v1/items/${itemId}`)
 
-    // Send get request to server
-    $.getJSON(`/api/v1/items/${itemId}`)
+            // If request successful, load form with delete prompt
+            .done(function(data){
 
-    // If request successful, load form with delete prompt
-    .done(function(data){
-      var itemId = data.item.id;
-      var itemName = data.item.name;
-      var itemNameCap = methods.toTitleCase(itemName);
-      var public_id = data.item.user_id;
+                const public_id = data.item.user_id;
 
-      if (methods.getCookie('public_id') === public_id) {
+                // If user id matches item user id, display form
+                if (methods.getCookie("public_id") === public_id) {
 
-        var htmlString = `
-        <div class="form-group">
-          <h3>
-            Are you sure you want to delete
-            <span>${itemNameCap}</span>?
-          </h3>
-          <div class="form-btn">
-            <button type="submit">Delete</button>
-          </div>
-        </div>
-        `;
+                    const itemId = data.item.id;
+                    let itemName = data.item.name;
+                    itemName = methods.toTitleCase(itemName);
+                    const htmlString = `
+                    <div class="form-group">
+                        <h3>
+                            Are you sure you want to delete
+                            <span>${itemNameCap}</span>?
+                        </h3>
+                        <div class="form-btn">
+                            <button type="submit">Delete</button>
+                        </div>
+                    </div>
+                    `;
 
-        $form.append(htmlString);
+                    // Insert html onto page
+                    $("#delete-item-form").append(htmlString);
 
-        itemDelete(itemId);
+                    // Send ajax request to server when form is submitted
+                    itemDelete(itemId);
 
-      } else {
-        var alert = 'You are not authorized to view this page!'
-        $errorAlert.text(alert).show();
-      }
+                // If user id does not match category user id, display error
+                } else {
 
-    })
+                    const alert = "You are not authorized to view this page!"
 
-    // If request failed, display error in console
-    .fail(function(error) {
-      if (error.responseJSON.error) {
-        console.log('Error: ' + error.responseJSON.error);
-      }
-    });
+                    // Display error alert on page
+                    $("#error-alert").text(alert).show();
+                }
+            })
 
-  });
-
-});
+            // If request failed, display error in console
+            .fail(function(error) {
+                if (error.responseJSON.error) {
+                    console.log(`Error: ${error.responseJSON.error}`);
+                }
+            });
+        });
+    }
+);

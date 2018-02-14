@@ -1,34 +1,41 @@
-define(
-  ['jquery', 'submitForm', 'setHeaders'],
-  function($, submitForm) {
+// Load required dependencies
+define(["jquery", "submitForm", "setHeaders"],
+    /**
+     * @description setup file to be used as module
+     * @param $ jQuery from jquery module
+     * @callback submitForm function from submitForm module
+     * @return categoryPut function to define categoryPut module
+     */
+    function($, submitForm) {
 
-  const categoryPut = function(categoryId) {
+        /**
+         * @description send ajax request to edit category
+         * @param {string} categoryId id of category
+         */
+        const categoryPut = function(categoryId) {
 
-    // Process the form when button is clicked
-    $('form').on('submit', (function(event) {
+            // Process the form when button is clicked
+            $("form").on("submit", (function(event) {
 
-      // Define html elements
-      var $nameField = $('#name-field');
+                // Create ajax configuration object
+                var ajaxConfig = {
+                    type: "PUT",
+                    url: `/api/v1/categories/${categoryId}`,
+                    datatype: "json",
+                    data: {
+                        name: $("#name-field").val().toLowerCase()
+                    }
+                };
 
-      // Create ajax configuration object
-      var ajaxConfig = {};
-      ajaxConfig.type = 'PUT';
-      ajaxConfig.url = `/api/v1/categories/${categoryId}`;
-      ajaxConfig.datatype = 'json';
-      ajaxConfig.data = {
-        name: $nameField.val().toLowerCase()
-      };
+                // Send ajax request to server
+                submitForm(ajaxConfig);
 
-      // Send ajax request to server
-      submitForm(ajaxConfig);
+                // Override default form functionality
+                event.preventDefault();
+            }));
+        };
 
-      // Override default form functionality
-      event.preventDefault();
-
-    }));
-
-  };
-
-  return categoryPut;
-
-});
+        // Return categoryPut function
+        return categoryPut;
+    }
+);
