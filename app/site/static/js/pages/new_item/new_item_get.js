@@ -66,10 +66,22 @@ define(["jquery", "methods", "itemPost"],
                 itemPost();
             })
 
-            // If request failed, display error in console
+            // If request failed, display error in console and on page
             .fail(function(error) {
                 if (error.responseJSON.error) {
+                    
                     console.log(`Error: ${error.responseJSON.error}`);
+                    const alert = "Please add category before adding item!";
+
+                    $(document).ready(function() {
+                        $("#error-alert").text(alert).show();
+                        $("#success-alert").hide();
+                        // Wait a second, then hide message and return home
+                        setTimeout(function() {
+                            $("#error-alert").text(alert).hide();
+                            window.location.href = "/";
+                        }, 2000);
+                    });
                 }
             });
         });
