@@ -16,8 +16,8 @@ from flask_jwt_extended import (
 
 # Initialize Flask-Dance blueprints
 google_blueprint = make_google_blueprint(
-    client_id=app.config.get('GOOGLE_ID'),
-    client_secret=app.config.get('GOOGLE_SECRET'),
+    client_id=app.config.get('GOOGLE_CLIENT_ID'),
+    client_secret=app.config.get('GOOGLE_CLIENT_SECRET'),
     scope=["profile", "email"],
     redirect_url="/token/google"
 )
