@@ -84,7 +84,7 @@ Vagrant.configure("2") do |config|
     sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.5 1
     sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 2
     apt-get install -y python3-pip
-    pip3 install --upgrade pip3
+    pip3 install --upgrade pip
     apt-get update
     apt-get upgrade -y
     apt-get autoremove -y
