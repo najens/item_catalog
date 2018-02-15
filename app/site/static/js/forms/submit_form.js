@@ -46,7 +46,7 @@ define(["jquery"],
                         $("#success-alert").hide();
                         // Wait a second, then hid message
                         setTimeout(function() {
-                            $errorAlert.text(alert).hide();
+                            $("#error-alert").text(alert).hide();
                         }, 3000);
                     });
                 }

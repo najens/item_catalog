@@ -66,10 +66,12 @@ define(["jquery", "methods"],
                     // For each category displayed add a click function
                     $("#categories").on("click", `#${htmlId}`, function() {
 
+                        const path = '/api/v1/items'
+                        const args = `?category=${category}&sort=name+asc`
+                        const url = path + args
+
                         // Send get request to server
-                        $.getJSON(`/api/v1/items?category=
-                              ${category}&sort=name+asc`
-                        )
+                        $.getJSON(url)
 
                         // If request successful, display
                         // list of items for that category
@@ -141,9 +143,9 @@ define(["jquery", "methods"],
                             });
 
                             // Insert html onto page
-                            $("#item-heading".empty();
+                            $("#item-heading").empty();
                             $("#item-json").show();
-                            $("#item-heading".append(
+                            $("#item-heading").append(
                                 `${categoryCap} Items (${itemListLength})`
                             );
                             $("#items").empty();
@@ -156,9 +158,9 @@ define(["jquery", "methods"],
                                 console.log(
                                     `Error: ${error.responseJSON.error}`
                                 );
-                                $("#item-heading".empty();
+                                $("#item-heading").empty();
                                 $("#item-json").hide();
-                                $("#item-heading".append(
+                                $("#item-heading").append(
                                     `${categoryCap} Items (${itemListLength})`
                                 );
                                 $("#items").empty();

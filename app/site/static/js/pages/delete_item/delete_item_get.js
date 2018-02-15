@@ -31,7 +31,7 @@ define(["jquery", "methods", "itemDelete"],
                     <div class="form-group">
                         <h3>
                             Are you sure you want to delete
-                            <span>${itemNameCap}</span>?
+                            <span>${itemName}</span>?
                         </h3>
                         <div class="form-btn">
                             <button type="submit">Delete</button>

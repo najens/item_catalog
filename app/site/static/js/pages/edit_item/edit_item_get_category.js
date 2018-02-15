@@ -36,16 +36,20 @@ define(["jquery", "methods"],
                             ${categoryCap}
                         </option>
                         `;
+
+                        // Add html to list
+                        categories.push(htmlString);
+
                     } else {
                         const htmlString = `
                         <option value="${category}">
                             ${categoryCap}
                         </option>
                         `;
-                    }
 
-                    // Add html to list
-                    categories.push(htmlString);
+                        // Add html to list
+                        categories.push(htmlString);
+                    }
                 });
 
                 // Insert html onto page
