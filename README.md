@@ -50,6 +50,36 @@ Install Module Dependencies
 $ cd /vagrant
 $ pip3 install -r requirements.txt
 ```
+## Setup Google and Facebook OAuth Configurations
+### Google
+- Log in to https://console.developers.google.com
+- Create new project
+- Type in a name for your project and click 'Create'
+- Select your new project and on the credentials page 'Create credentials' with 'OAuth client ID'
+- Configure consent screen by giving product a name to show users
+- Select 'Web application' as application type
+- Set Authorized redirect URI to 'htttp://localhost:5000/google_login/google/authorized'
+- Open config.py in Vim or other editor and insert Google CLient ID and Client Secret
+- Save config.py and exit
+```
+$ vim config.py
+```
+
+### Facebook
+- Log in to https://developers.facebook.com
+- Add a new App
+- Enter App display name and your email address
+- Setup Facebook Login
+- Skip the quick start and click on Basic Settings
+- Insert 'localhost' for the app domain
+- Insert 'http://localhost:5000/' for the site url and save changes
+- Open config.py in Vim or other editor and insert Facebook App ID and App Secret
+- Save config.py and exit
+```
+$ vim config.py
+```
+
+
 Export insecure transport environment variable to use with http on localhost
 ```
 export OAUTHLIB_INSECURE_TRANSPORT=1
