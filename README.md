@@ -37,7 +37,7 @@ Create and activate virtual environment
 ```
 $ sudo su
 $ mkdir /.virtualenvs
-$ cd /virtualenvs
+$ cd /.virtualenvs
 $ python3 -m venv item_catalog
 $ source item_catalog/bin/activate
 ```
