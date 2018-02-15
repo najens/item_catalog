@@ -69,10 +69,14 @@ $ vim config.py
 - Log in to https://developers.facebook.com
 - Add a new App
 - Enter App display name and your email address
-- Setup Facebook Login
-- Skip the quick start and click on Basic Settings
+- Click on Basic under Settings tab
 - Insert 'localhost' for the app domain
 - Insert 'http://localhost:5000/' for the site url and save changes
+- Click on the Products + tab to add Facebook Login
+- Click on settings under the Facebook Login tab
+- Click on Setup under Facebook Login
+- Skip the Quickstart and click on Settings under the Facebook Login tab
+- Insert 'http://localhost:5000/facebook_login/facebook/authorized' into valid OAuth redirect URIs and save changes.
 - Open config.py in Vim or other editor and insert Facebook App ID and App Secret
 - Save config.py and exit
 ```
