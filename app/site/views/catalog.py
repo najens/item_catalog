@@ -38,7 +38,7 @@ def new_category():
     return jsonify({'error': 'Not authorized!'}), 401
 
 
-@site.route('/<category>/edit')
+@site.route('/<path:category>/edit')
 @login_required
 def edit_category(category):
     """
@@ -64,7 +64,7 @@ def edit_category(category):
     return jsonify({'error': 'Not authorized!'}), 401
 
 
-@site.route('/<category>/delete')
+@site.route('/<path:category>/delete')
 @login_required
 def delete_category(category):
     """
@@ -111,7 +111,7 @@ def new_item():
     return jsonify({'error': 'Not authorized!'}), 401
 
 
-@site.route('/<category>/<int:id>')
+@site.route('/<path:category>/<int:id>')
 def item_info(category, id):
     """
     Displays page with information about item.
@@ -124,7 +124,7 @@ def item_info(category, id):
     return render_template('item.html', user=user, logged_in=logged_in), 200
 
 
-@site.route('/<category>/<int:id>/edit')
+@site.route('/<path:category>/<int:id>/edit')
 @login_required
 def edit_item(category, id):
     """
@@ -145,7 +145,7 @@ def edit_item(category, id):
     return jsonify({'error': 'Not authorized!'}), 401
 
 
-@site.route('/<category>/<int:id>/delete')
+@site.route('/<path:category>/<int:id>/delete')
 @login_required
 def delete_item(category, id):
     """
