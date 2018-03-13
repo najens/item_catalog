@@ -1,5 +1,5 @@
 requirejs.config({
-    baseUrl: "http://localhost:5000/app/site/static/js",
+    baseUrl: "http://www.monteguia.com/app/site/static/js",
     paths: {
         // the left side is the module ID,
         // the right side is the path to
