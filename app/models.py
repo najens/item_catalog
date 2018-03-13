@@ -50,7 +50,7 @@ class UserRoles(db.Model):
     __tablename__ = 'user_roles'
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(
-        db.Integer(),
+        db.String(),
         db.ForeignKey('user.public_id', ondelete='CASCADE')
     )
     role_id = db.Column(
@@ -62,7 +62,7 @@ class UserRoles(db.Model):
 # Define OAuth model
 class OAuth(OAuthConsumerMixin, db.Model):
     provider_user_id = db.Column(db.String(120), nullable=False)
-    user_id = db.Column(db.Integer(), db.ForeignKey('user.public_id'))
+    user_id = db.Column(db.String(), db.ForeignKey('user.public_id'))
     user = db.relationship('User')
 
 
@@ -72,7 +72,7 @@ class Category(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(32), nullable=False, unique=True)
     user_id = db.Column(
-        db.Integer(),
+        db.String(),
         db.ForeignKey('user.public_id'),
         nullable=False
     )
@@ -90,7 +90,7 @@ class Item(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(32), nullable=False, unique=True)
     description = db.Column(db.String(250), nullable=False)
-    user_id = db.Column(db.Integer(), db.ForeignKey('user.public_id'))
+    user_id = db.Column(db.String(), db.ForeignKey('user.public_id'))
     category_name = db.Column(db.String(), db.ForeignKey('category.name'))
 
 
