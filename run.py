@@ -1,7 +1,9 @@
 #!/usr/bin/env python
-from app import app
+import sys
+sys.path.insert(0, 'var/www/catalog')
+from app import app as application
 
 
 if __name__ == '__main__':
     # Run app on localhost port 5000
-    app.run()
+    application.run()
