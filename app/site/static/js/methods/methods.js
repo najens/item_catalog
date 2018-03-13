@@ -48,7 +48,7 @@ define(function() {
      * @return list of items
      */
     const splitPath = function() {
-        const domain = "localhost:5000/"
+        const domain = "www.monteguia.com/"
         const url = $(location).attr("href");
         const pieces = url.split(domain);
         const items = pieces[1].split("/");
