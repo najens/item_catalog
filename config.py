@@ -7,7 +7,7 @@ POSTGRES_PW = 'mypassword'
 POSTGRES_URL = 'udlightsaildbinstance.c3holytuhjpo.us-west-2.rds.amazonaws.com'
 POSTGRES_PORT = '5432'
 POSTGRES_DB = 'catalog'
-DB_URL = 'postgresql://{user}:{pw}@{url}:{port}/{db}'.format(user=POSTGRES_USER, pw=POSTGRES_PW, url=POSTGRES_URL, port=POSTGRES_PORT,db=POSTGRES_DB)
+DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}:{port}/{db}'.format(user=POSTGRES_USER, pw=POSTGRES_PW, url=POSTGRES_URL, port=POSTGRES_PORT,db=POSTGRES_DB)
 SQLALCHEMY_DATABASE_URI = DB_URL
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
